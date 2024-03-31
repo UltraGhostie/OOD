@@ -1,9 +1,11 @@
 package se.kth.iv1350.model;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 
+import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.SaleDTO;
 
 /**
@@ -13,7 +15,7 @@ public class Sale {
     private int id;
     private ArrayList<Item> items;
     private Integer customerID;
-    private Integer totalDiscount;
+    private double totalDiscount;
     
     /**
      * Initializes a new object of type sale.
@@ -22,6 +24,7 @@ public class Sale {
     {
         this.id = generateID();
         this.items = new ArrayList<Item>();
+        totalDiscount = 0;
     }
     
     /**
@@ -30,16 +33,8 @@ public class Sale {
      */
     public SaleDTO dto()
     {
-        return new SaleDTO(id, items, null, customerID, id);
-    }
-
-    /**
-     * Calculates the total cost of items in this sale instance including taxes.
-     * @return The total cost as an int.
-     */
-    private int totalCost()
-    {
-        return 0;
+        LocalDateTime dateTime = LocalDateTime.now();
+        return new SaleDTO(id, items, dateTime, customerID, totalDiscount);
     }
 
     /**
@@ -64,7 +59,11 @@ public class Sale {
      */
     public void add(Item item)
     {
-        items.add(item);
+        try {
+            add(item.itemID);
+        } catch (Exception e) {
+            items.add(item);
+        }
     }
 
     /**
@@ -83,11 +82,47 @@ public class Sale {
         throw new InvalidParameterException("No item with id: " + itemID + " found");
     }
 
+    /**
+     * Sets the count of the item with id itemID to the non-zero, non-negative integer count.
+     * Throws an InvalidParameterException if itemID is not found or count is below 1.
+     * @param itemID The unique id of the item to be changed.
+     * @param itemCount The amount of the item. Non-zero, non-negative.
+     */
+    public void setCount(int itemID, int itemCount)
+    {
+        int oneItem = 1;
+        if (itemCount < oneItem || !contains(itemID)) {
+            throw new InvalidParameterException();
+        }
+
+        for (Item item : items) {
+            if (itemID == item.itemID) {
+                item.setCount(itemCount);
+            }
+        }
+    }
+
+    public void applyDiscount(DiscountDTO discountInfo)
+    {
+        totalDiscount += discountInfo.flatDiscount;
+        totalDiscount += discountInfo.customerDiscount * totalCost();
+        totalDiscount += discountInfo.totalDiscount * totalCost();
+    }
+
+    private int totalCost()
+    {
+        int total = 0;
+        for (Item item : items) {
+            total += item.cost * item.count();
+        }
+        return total;
+    }
+
     private int generateID()
     {
         int id = 0;
         Random random = new Random();
-        id = random.nextInt();
+        id = Math.abs(random.nextInt());
         return id;
     }
 }

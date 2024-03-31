@@ -1,6 +1,9 @@
 package se.kth.iv1350.controller;
 
 import se.kth.iv1350.model.*;
+
+import java.util.ArrayList;
+
 import se.kth.iv1350.dto.*;
 import se.kth.iv1350.integration.Integration;
 
@@ -50,6 +53,44 @@ public class Controller {
 
         Item item = new Item(itemInfo);
         currentSale.add(item);
+        return currentSale.dto();
+    }
+
+    /**
+     * Attempts to set the count of the item with the id itemID to the non-zero, non-negative itemCount.
+     * Returns null if unsuccessfull.
+     * @param itemID The id of the item to be changed.
+     * @param itemCount The new count of the item.
+     */
+    public SaleDTO setCount(int itemID, int itemCount)
+    {
+        try {
+            currentSale.setCount(itemID, itemCount);
+            return currentSale.dto();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Send a request to the discount system to retrieve discount data about the current sale.
+     * @param customerID The id of the customer.
+     * @return A new instance of SaleDTO containing previous data as well as discount data.
+     */
+    public SaleDTO discountRequest(int customerID)
+    {
+        ArrayList<Integer> itemIDList = new ArrayList<Integer>();
+        int totalCost = 0;
+        for (Item item : currentSale.dto().items) {
+            itemIDList.add(item.itemID);
+            totalCost += item.cost * item.count();
+        }
+        int[] itemIDArray = new int[itemIDList.size()];
+        for (int i = 0; i < itemIDList.size(); i++) {
+            itemIDArray[i] = itemIDList.get(i);
+        }
+        DiscountDTO discountInfo = integration.discountRequest(customerID, itemIDArray, totalCost);
+        currentSale.applyDiscount(discountInfo);
         return currentSale.dto();
     }
 }

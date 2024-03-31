@@ -15,7 +15,7 @@ public class Inventory {
     public Inventory()
     {
         this.list = new ArrayList<InvItem>();
-        this.dummy = new InvItem(1, "foo", 1, (float)0.06, "bar");
+        this.dummy = new InvItem(1, "foo", 1, 0.06, "bar");
         list.add(dummy);
     }
 

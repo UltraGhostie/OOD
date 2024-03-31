@@ -4,7 +4,7 @@ class InvItem {
     int id;
     String name;
     int cost;
-    float vat;
+    double vat;
     String description;
 
     /**
@@ -15,7 +15,7 @@ class InvItem {
      * @param vat
      * @param description
      */
-    InvItem(int id, String name, int cost, float vat, String description)
+    InvItem(int id, String name, int cost, double vat, String description)
     {
         this.id = id;
         this.name = name;

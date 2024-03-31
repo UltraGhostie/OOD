@@ -1,7 +1,6 @@
 package se.kth.iv1350.model;
 
 import se.kth.iv1350.dto.ItemDTO;
-import se.kth.iv1350.dto.SaleDTO;
 
 /**
  * The Item class represents an item/ware/good type that is to be sold.
@@ -9,7 +8,7 @@ import se.kth.iv1350.dto.SaleDTO;
 public class Item {
     public final int itemID;
     public final int cost;
-    public final float vat;
+    public final double vat;
     public final String name;
     public final String description;
     private int count;
@@ -22,7 +21,7 @@ public class Item {
      * @param vat Value added tax percentage.
      * @param description Item description.
      */
-    public Item(int itemID, String name, int cost, float vat, String description)
+    public Item(int itemID, String name, int cost, double vat, String description)
     {
         int oneItem = 1;
         this.itemID = itemID;
@@ -72,5 +71,14 @@ public class Item {
     public int count()
     {
         return count;
+    }
+
+    /**
+     * Sets the count of this item to a non-negative, non-zero integer
+     * @param count The amount of this item.
+     */
+    public void setCount(int count)
+    {
+        this.count = count;
     }
 }

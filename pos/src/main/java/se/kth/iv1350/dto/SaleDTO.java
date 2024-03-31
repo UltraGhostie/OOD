@@ -11,7 +11,7 @@ public class SaleDTO {
     public final int saleID;
     public final LocalDateTime dateTime;
     public final Integer customerID;
-    public final int totalDiscount;
+    public final double totalDiscount;
     public final int totalCostBeforeDiscount;
     public final ArrayList<Item> items;
 
@@ -43,7 +43,7 @@ public class SaleDTO {
      * @param customerID The id of the customer in the sale. Null if unknown.
      * @param totalDiscount The total discount in currency. Null if unknown.
      */
-    public SaleDTO(int saleID, ArrayList<Item> items, LocalDateTime dateTime, Integer customerID, int totalDiscount)
+    public SaleDTO(int saleID, ArrayList<Item> items, LocalDateTime dateTime, Integer customerID, double totalDiscount)
     {
         this.saleID = saleID;
         this.items = items;

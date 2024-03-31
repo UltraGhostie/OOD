@@ -21,11 +21,12 @@ public class ViewTest {
     static PrintStream standard;
     static File outFile;
     static PrintStream out;
+    static View view;
 
     @BeforeClass
     public static void initClass()
     {
-        outFile = new File("test.txt");
+        outFile = new File("afsd.txt");
         standard = System.out;
     }
 
@@ -34,6 +35,9 @@ public class ViewTest {
     {
         controller = new Controller(new Integration());
         controller.startSale();
+        view = new View(controller);
+        view.startSale();
+
         try {
             outFile.createNewFile();
             out = new PrintStream(outFile);
@@ -47,32 +51,18 @@ public class ViewTest {
     @After
     public void clean()
     {
+        view = null;
         controller = null;
         System.setOut(standard);
         out.close();
+        System.gc();
         outFile.delete();
-    }
-
-    @Test
-    public void validConstructionTest()
-    {
-        try {
-            View view = new View(controller);
-        } catch (Exception e) {
-            assertTrue(false);
-        }
-        assertTrue(true);
     }
 
     @Test
     public void startSaleTest()
     {
-        View view = new View(controller);
-        try {
-            view.startSale();
-        } catch (Exception e) {
-            fail();
-        }
+        view.startSale();
         assertTrue(true);
     }
 
@@ -80,9 +70,8 @@ public class ViewTest {
     public void scanValidItemTest()
     {
         int validID = 1;
-        String validIDMessage = "Success!";
+        String expected = "Cost: 1";
 
-        View view = new View(controller);
         try {
             view.scanItem(validID);
         } catch (Exception e) {
@@ -92,7 +81,7 @@ public class ViewTest {
         try {
             Scanner scanner = new Scanner(outFile);
             String fileContents = readTestFile(scanner);
-            assertLastLineEquals(validIDMessage, fileContents);
+            assertLastLineEquals(expected, fileContents);
         } catch (Exception e) {
             fail();
         }
@@ -104,7 +93,6 @@ public class ViewTest {
         int invalidID = -1234;
         String invalidIDMessage = "Invalid item id";
 
-        View view = new View(controller);
         view.scanItem(invalidID);
 
         try {
@@ -117,7 +105,52 @@ public class ViewTest {
         }
     }
 
-    String readTestFile(Scanner scanner)
+    @Test
+    public void scanItemMultipleTimesTest()
+    {
+        int validID = 1;
+        int times = 3;
+
+
+        for (int i = 0; i < times; i++) {
+            view.scanItem(validID);
+        }
+
+        assertItemCount(times);
+    }
+
+    @Test
+    public void setValidCountTest()
+    {
+        int validID = 1;
+        int newCount = 5;
+
+        view.scanItem(validID);
+        view.setCount(validID, newCount);
+        assertItemCount(newCount);
+    }
+
+    private void assertItemCount(int expectedCount)
+    {
+        try {
+            Scanner scanner = new Scanner(outFile);
+            String output = readTestFile(scanner);
+            String[] split = output.split("\\r\\n\\r\\n");
+            output = split[split.length-1];
+            split = output.split("\\r\\n");
+
+            for (String string : split) {
+                if (string.contains("*")) {
+                    Integer count = Integer.parseInt(string.split("*")[1].split(",")[0]);
+                    assertEquals(expectedCount, (int)count);
+                }
+            }
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    private String readTestFile(Scanner scanner)
     {
         String fileContents = new String();
         while (scanner.hasNextLine()) {
@@ -126,10 +159,10 @@ public class ViewTest {
         return fileContents;
     }
 
-    void assertLastLineEquals(String expected, String actual)
+    private void assertLastLineEquals(String expected, String actual)
     {
         String[] split = actual.trim().split("\\n");
         String lastString = split[split.length-1];
-        assertEquals(expected.trim(), actual.trim());
+        assertEquals(expected.trim(), lastString.trim());
     }
 }
