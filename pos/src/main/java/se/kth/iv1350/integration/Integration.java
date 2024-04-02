@@ -4,6 +4,7 @@ import se.kth.iv1350.accounting.Accounting;
 import se.kth.iv1350.discount.Discount;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
+import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.inventory.Inventory;
 import se.kth.iv1350.peripherals.Register;
 
@@ -44,7 +45,7 @@ public class Integration {
     }
 
     /**
- * Sends a request to the discount system asking for discount information.
+     * Sends a request to the discount system asking for discount information.
      * @param customerID The unique id of the customer requesting discount.
      * @param itemIDs An array containing the ids of the items in the sale.
      * @param totalCost The total cost of the items in the sale, excluding vat.
@@ -59,11 +60,38 @@ public class Integration {
         return discountInfo;
     }
 
+    /**
+     * Records the sale to the external accounting system.
+     * @param saleDTO The sale to be recorded.
+     */
+    public void recordSale(SaleDTO saleDTO)
+    {
+        accounting.record(saleDTO);
+    }
+
+    /**
+     * Updates the register with the given amount.
+     * @param amount The balance change of the register.
+     */
+    public void updateRegister(double amount)
+    {
+        register.Update(amount);
+    }
+
+    /**
+     * Decreases the count of items in the external inventory system by their respective counts in the sale.
+     * @param saleDTO The sale containing the items to be removed.
+     */
+    public void removeInventory(SaleDTO saleDTO)
+    {
+        inventory.remove(saleDTO);
+    }
+
     private ItemDTO parse(String itemInfo)
     {
         int id = 1;
         String name = "Test";
-        int cost = 1;
+        double cost = 1;
         double vat = 0.06;
         String description = "Hello World!";
         //Stuff

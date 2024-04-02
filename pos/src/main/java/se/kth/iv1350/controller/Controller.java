@@ -2,6 +2,7 @@ package se.kth.iv1350.controller;
 
 import se.kth.iv1350.model.*;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import se.kth.iv1350.dto.*;
@@ -42,7 +43,7 @@ public class Controller {
     public SaleDTO scanItem(int itemID)
     {
         if (currentSale.contains(itemID)) {
-            currentSale.add(itemID);
+            currentSale.increment(itemID);
             return currentSale.dto();
         }
 
@@ -92,5 +93,24 @@ public class Controller {
         DiscountDTO discountInfo = integration.discountRequest(customerID, itemIDArray, totalCost);
         currentSale.applyDiscount(discountInfo);
         return currentSale.dto();
+    }
+
+    /**
+     * Completes the sale and returns the amount of change to be given.
+     * @param amount The payment given by the customer.
+     * @return The change to be given to the customer.
+     */
+    public double enterPayment(double amount)
+    {
+        SaleDTO saleInfo = currentSale.dto();
+        double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
+        if (amount - cost < 0) {
+            throw new InvalidParameterException("Payment requirements not met.");
+        }
+        integration.removeInventory(saleInfo);
+        integration.recordSale(saleInfo);
+        integration.updateRegister(amount);
+        currentSale = null;
+        return amount - cost;
     }
 }

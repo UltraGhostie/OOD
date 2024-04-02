@@ -12,7 +12,7 @@ public class SaleDTO {
     public final LocalDateTime dateTime;
     public final Integer customerID;
     public final double totalDiscount;
-    public final int totalCostBeforeDiscount;
+    public final double totalCostBeforeDiscount;
     public final ArrayList<Item> items;
 
     /**
@@ -53,9 +53,9 @@ public class SaleDTO {
         this.totalCostBeforeDiscount = calculateTotalCost();
     }
 
-    private int calculateTotalCost()
+    private double calculateTotalCost()
     {
-        int total = 0;
+        double total = 0;
         if (items == null) {
             return total;
         }

@@ -9,31 +9,56 @@ import org.junit.Test;
 
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
+import se.kth.iv1350.dto.SaleDTO;
 
+/**
+ * Unit tests for Integration.
+ */
 public class IntegrationTest {
     Integration integration;
 
+    /**
+     * Initializes temporary variables.
+     */
     @Before 
     public void init()
     {
         integration = new Integration();
     }
 
+    /**
+     * Clears up temporary variables.
+     */
     @After
     public void cleanup()
     {
         integration = null;
     }
 
+    /**
+     * Checks that a valid item is returned when found.
+     */
     @Test
     public void lookupValidIDTest()
     {
         int validID = 1;
+        String expectedName = "Test";
+        double expectedCost = 1;
+        double expectedVat = 0.06;
+        String expectedDescription = "Hello World!";
+        double acceptableDelta = 0.1;
 
         ItemDTO item = integration.lookup(validID);
-        assertEquals(1, item.itemID);
+        assertEquals(validID, item.itemID);
+        assertEquals(expectedName, item.name);
+        assertEquals(expectedCost, item.cost, acceptableDelta);
+        assertEquals(expectedVat, item.vat, acceptableDelta);
+        assertEquals(expectedDescription, item.description);
     }
 
+    /**
+     * Checks that null is returned when no item is found.
+     */
     @Test
     public void lookupInvalidIDTest()
     {
@@ -43,6 +68,9 @@ public class IntegrationTest {
         assertNull(item);
     }
 
+    /**
+     * Checks that a discount request is correctly returned.
+     */
     @Test
     public void discountRequestTest()
     {
@@ -56,5 +84,37 @@ public class IntegrationTest {
         assertEquals(expectedCustomerDiscount, discountInfo.customerDiscount, 0.1);
         assertEquals(expectedTotalDiscount, discountInfo.totalDiscount, 0.1);
         assertEquals(expectedFlatDiscount, discountInfo.flatDiscount);
+    }
+
+    /**
+     * Checks that the recordSale() function executes.
+     */
+    @Test
+    public void recordSaleTest()
+    {
+        SaleDTO saleDTO = new SaleDTO(0);
+        integration.recordSale(saleDTO);
+    }
+
+    /**
+     * Checks that the removeInventory() function executes.
+     */
+    @Test
+    public void removeInventoryTest()
+    {
+        SaleDTO saleDTO = new SaleDTO(0);
+        integration.removeInventory(saleDTO);
+    }
+
+    /**
+     * Checks that the updateRegister() function executes.
+     */
+    @Test
+    public void updateRegisterTest()
+    {
+        int amount = 15;
+        int negativeAmount = -amount;
+        integration.updateRegister(amount);
+        integration.updateRegister(negativeAmount);
     }
 } 

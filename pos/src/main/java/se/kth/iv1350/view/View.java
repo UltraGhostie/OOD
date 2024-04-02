@@ -91,7 +91,7 @@ public class View {
 
         printItems();
         
-        int cost = saleInfo.totalCostBeforeDiscount;
+        double cost = saleInfo.totalCostBeforeDiscount;
         double discount = saleInfo.totalDiscount;
         if (discount != 0) {
             string = "Cost before discount: " + cost;

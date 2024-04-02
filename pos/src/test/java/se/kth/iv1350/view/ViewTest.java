@@ -16,6 +16,9 @@ import org.junit.Test;
 import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.integration.Integration;
 
+/**
+ * Unit test for View.
+ */
 public class ViewTest {
     static Controller controller;
     static PrintStream standard;
@@ -23,13 +26,19 @@ public class ViewTest {
     static PrintStream out;
     static View view;
 
+    /**
+     * Sets standard output to a temp file used for testing.
+     */
     @BeforeClass
     public static void initClass()
     {
-        outFile = new File("afsd.txt");
+        outFile = new File("asdhbfahsdbguaksdg.txt");
         standard = System.out;
     }
 
+    /**
+     * Initializes temporary variables and creates the testing file.
+     */
     @Before
     public void init()
     {
@@ -48,17 +57,25 @@ public class ViewTest {
         }
     }
 
+    /**
+     * Empties the temporary variables and removes the temp file.
+     */
     @After
     public void clean()
     {
         view = null;
         controller = null;
         System.setOut(standard);
-        out.close();
+        if (out != null) {
+            out.close();
+        }
         System.gc();
         outFile.delete();
     }
 
+    /**
+     * Checks that startSale() runs.
+     */
     @Test
     public void startSaleTest()
     {
@@ -66,15 +83,19 @@ public class ViewTest {
         assertTrue(true);
     }
 
+    /**
+     * Checks that scanning a valid item adds it correctly.
+     */
     @Test
     public void scanValidItemTest()
     {
         int validID = 1;
-        String expected = "Cost: 1";
+        String expected = "Cost: 1.0";
 
         try {
             view.scanItem(validID);
         } catch (Exception e) {
+            System.err.println(e);
             fail();
         }
 
@@ -83,10 +104,14 @@ public class ViewTest {
             String fileContents = readTestFile(scanner);
             assertLastLineEquals(expected, fileContents);
         } catch (Exception e) {
+            System.err.println(e);
             fail();
         }
     }
 
+    /**
+     * Checks that scanning an invalid item produces the expected output.
+     */
     @Test
     public void scanInvalidItemTest()
     {
@@ -105,6 +130,9 @@ public class ViewTest {
         }
     }
 
+    /**
+     * Testing that scanning an item multiple times creates the expected output.
+     */
     @Test
     public void scanItemMultipleTimesTest()
     {
@@ -119,6 +147,9 @@ public class ViewTest {
         assertItemCount(times);
     }
 
+    /**
+     * Checks that setting the count of an item produces the expected output.
+     */
     @Test
     public void setValidCountTest()
     {

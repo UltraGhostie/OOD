@@ -7,30 +7,11 @@ import se.kth.iv1350.dto.ItemDTO;
  */
 public class Item {
     public final int itemID;
-    public final int cost;
+    public final double cost;
     public final double vat;
     public final String name;
     public final String description;
     private int count;
-
-    /**
-     * Initializes a new instance of the Item class representing information about a certain item type.
-     * @param itemID Unique id for each item type.
-     * @param name Item name.
-     * @param cost Cost of item.
-     * @param vat Value added tax percentage.
-     * @param description Item description.
-     */
-    public Item(int itemID, String name, int cost, double vat, String description)
-    {
-        int oneItem = 1;
-        this.itemID = itemID;
-        this.name = name;
-        this.cost = cost;
-        this.vat = vat;
-        this.description = description;
-        this.count = oneItem;
-    }
 
     /**
      * Initializes a new instance of the item class based on the information contained in the ItemDTO itemInfo.

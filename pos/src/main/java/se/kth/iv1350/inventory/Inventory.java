@@ -2,7 +2,10 @@ package se.kth.iv1350.inventory;
 
 import java.util.ArrayList;
 
+import se.kth.iv1350.dto.SaleDTO;
+
 /**
+ * Substitute for an external inventory DB system. 
  * Contains information about dummy items and methods to manipulate and access it.
  */
 public class Inventory {
@@ -34,5 +37,13 @@ public class Inventory {
             }
         }
         return null;
+    }
+
+    /**
+     * Updates inventory by removing the items
+     */
+    public void remove(SaleDTO saleInfo)
+    {
+        return;
     }
 }

@@ -1,5 +1,8 @@
 package se.kth.iv1350.discount;
 
+/**
+ * Substitute for the discount DB system.
+ */
 public class Discount {
     
     /**

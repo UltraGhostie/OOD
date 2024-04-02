@@ -54,32 +54,33 @@ public class Sale {
     }
 
     /**
-     * Adds a new item to the sale.
-     * @param item The item to be added to the sale.
+     * Adds the item to the sale
+     * @param item The item to add to the sale.
      */
     public void add(Item item)
     {
-        try {
-            add(item.itemID);
-        } catch (Exception e) {
-            items.add(item);
-        }
-    }
-
-    /**
-     * Increases the count of the item with id itemID. Throws a new InvalidParameterException if no item with
-     * id itemID found.
-     * @param itemID The id of the item to increase count of.
-     */
-    public void add(int itemID)
-    {
-        for (Item item : items) {
-            if (item.itemID == itemID) {
-                item.increment();
+        for (Item currentItem : items) {
+            if (currentItem.itemID == item.itemID) {
+                increment(item.itemID);
                 return;
             }
         }
-        throw new InvalidParameterException("No item with id: " + itemID + " found");
+        items.add(item);
+    }
+
+    /**
+     * Increments the count of the item with the id itemID
+     * @param itemID The id of the item whose count should be increased.
+     */
+    public void increment(int itemID)
+    {
+        for (Item currentItem : items) {
+            if (currentItem.itemID == itemID) {
+                currentItem.increment();
+                return;
+            }
+        }
+        throw new InvalidParameterException("No item with id: " + itemID + " in sale.");
     }
 
     /**
@@ -102,6 +103,10 @@ public class Sale {
         }
     }
 
+    /**
+     * Applies discount based on discountInfo to totalDiscount.
+     * @param discountInfo A DTO containing information about discounts for this sale.
+     */
     public void applyDiscount(DiscountDTO discountInfo)
     {
         totalDiscount += discountInfo.flatDiscount;
