@@ -98,8 +98,9 @@ public class ControllerTest {
         int knownItemID = 1;
         double itemCost = 1;
         int itemCount = 10;
+        double itemVat = 1.06;
         double acceptableDelta = 0.1;
-        double expectedChange = amount - (itemCost*itemCount);
+        double expectedChange = amount - (itemCost*itemCount*itemVat);
         controller.scanItem(knownItemID);
         controller.setCount(knownItemID, itemCount);
         assertEquals(expectedChange, controller.enterPayment(amount), acceptableDelta);

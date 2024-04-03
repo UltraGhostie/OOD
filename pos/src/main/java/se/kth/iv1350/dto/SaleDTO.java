@@ -60,7 +60,7 @@ public class SaleDTO {
             return total;
         }
         for (Item currentItem : items) {
-            total = currentItem.cost * currentItem.count();
+            total = currentItem.cost * currentItem.count() * (1+currentItem.vat);
         }
         return total;
     }
