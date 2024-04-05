@@ -15,14 +15,21 @@ import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
-import se.kth.iv1350.integration.Integration;
+import se.kth.iv1350.view.Observer;
 
 /**
  * Unit tests for Sale.
  */
-public class SaleTest {
+public class SaleTest implements Observer{
     Sale sale;
     Item item;
+    SaleDTO saleInfo;
+
+    @Override
+    public void stateChange(SaleDTO saleInfo)
+    {
+        this.saleInfo = saleInfo;
+    }
 
     /**
      * Creates new objects for sale and item.
@@ -36,8 +43,9 @@ public class SaleTest {
         double vat = 0.06;
         String description = "test";
         sale = new Sale();
-        ItemDTO itemDTO = new ItemDTO(itemId, name, cost, vat, description);
+        ItemDTO itemDTO = new ItemDTO.ItemDTOBuilder(itemId).setCost(cost).setDescription(description).setName(name).setVat(vat).build();
         item = new Item(itemDTO);
+        Controller.getInstance().subscribeOnUpdate(this);
     }
 
     /**
@@ -48,6 +56,7 @@ public class SaleTest {
     {
         sale = null;
         item = null;
+        saleInfo = null;
     }
 
     /**
@@ -147,10 +156,8 @@ public class SaleTest {
         int itemCount = 60;
         double expectedDiscount = flatDiscount + (totalDiscount*itemCount) + (customerDiscount*itemCount);
         DiscountDTO discountInfo = new DiscountDTO(customerDiscount, totalDiscount, flatDiscount);
-        Controller controller = new Controller(new Integration());
+        Controller controller = Controller.getInstance();
         controller.startSale();
-        SaleDTO itemContainer = controller.scanItem(knownItemID);
-        Item item = itemContainer.items.get(0);
         sale.add(item);
         sale.setCount(knownItemID, itemCount);
         sale.applyDiscount(discountInfo);

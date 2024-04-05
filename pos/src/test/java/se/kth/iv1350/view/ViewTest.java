@@ -19,7 +19,7 @@ public class ViewTest {
     @Before
     public void init()
     {
-        controller = new Controller(new Integration());
+        controller = Controller.getInstance();
         controller.startSale();
         view = new View(controller);
     }

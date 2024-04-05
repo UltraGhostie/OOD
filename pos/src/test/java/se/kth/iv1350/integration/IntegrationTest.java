@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import se.kth.iv1350.dto.DiscountDTO;
@@ -15,22 +17,22 @@ import se.kth.iv1350.dto.SaleDTO;
  * Unit tests for Integration.
  */
 public class IntegrationTest {
-    Integration integration;
+    static Integration integration;
 
     /**
      * Initializes temporary variables.
      */
-    @Before 
-    public void init()
+    @BeforeClass
+    public static void init()
     {
-        integration = new Integration();
+        integration = Integration.getInstance();
     }
 
     /**
      * Clears up temporary variables.
      */
-    @After
-    public void cleanup()
+    @AfterClass
+    public static void cleanup()
     {
         integration = null;
     }
@@ -92,7 +94,7 @@ public class IntegrationTest {
     @Test
     public void recordSaleTest()
     {
-        SaleDTO saleDTO = new SaleDTO(0);
+        SaleDTO saleDTO = new SaleDTO.SaleDTOBuilder(0).build();
         integration.recordSale(saleDTO);
     }
 
@@ -102,7 +104,7 @@ public class IntegrationTest {
     @Test
     public void removeInventoryTest()
     {
-        SaleDTO saleDTO = new SaleDTO(0);
+        SaleDTO saleDTO = new SaleDTO.SaleDTOBuilder(0).build();
         integration.removeInventory(saleDTO);
     }
 

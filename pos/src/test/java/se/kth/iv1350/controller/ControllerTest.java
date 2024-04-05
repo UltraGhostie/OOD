@@ -2,24 +2,31 @@ package se.kth.iv1350.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.integration.Integration;
 import se.kth.iv1350.model.Item;
+import se.kth.iv1350.view.Observer;
 
 /**
  * Unit tests for Controller.
  */
-public class ControllerTest {
-    static Integration integration;
-    static Controller controller;
+public class ControllerTest implements Observer{
+    static Integration integration = Integration.getInstance();
+    static Controller controller = Controller.getInstance();
+    SaleDTO saleInfo;
+
+    public void stateChange(SaleDTO saleInfo)
+    {
+        this.saleInfo = saleInfo;
+    }
 
     /**
      * Initializes new temporary variables.
@@ -27,9 +34,9 @@ public class ControllerTest {
     @Before
     public void init()
     {
-        integration = new Integration();
-        controller = new Controller(integration);
         controller.startSale();
+        controller.subscribeOnUpdate(this);
+        saleInfo = null;
     }
 
     /**
@@ -38,8 +45,14 @@ public class ControllerTest {
     @After
     public void cleanup()
     {
-        integration = null;
+        saleInfo = null;
+    }
+
+    @AfterClass
+    public static void cleanerup()
+    {
         controller = null;
+        integration = null;
     }
 
     /**
@@ -49,11 +62,11 @@ public class ControllerTest {
     public void startSaleTest()
     {
         int validItemID = 1;
-        SaleDTO saleData = controller.startSale();
-        assertNotNull(saleData);
+        controller.startSale();
+        assertNotNull(saleInfo);
         controller.scanItem(validItemID);
-        saleData = controller.startSale();
-        for (Item item : saleData.items) {
+        controller.startSale();
+        for (Item item : saleInfo.items) {
             fail();
         }
         assertTrue(true);
@@ -67,7 +80,7 @@ public class ControllerTest {
     {
         int validItemID = 1;
         String failMessage = "No item with id " + validItemID + " found";
-        SaleDTO saleInfo = controller.scanItem(validItemID);
+        controller.scanItem(validItemID);
         assertNotNull(saleInfo);
         for (Item item : saleInfo.items) {
             if (item.itemID == validItemID) {
@@ -84,8 +97,12 @@ public class ControllerTest {
     public void scanInvalidItemTest()
     {
         int invalidItemID = -1234;
-        SaleDTO shouldBeNull = controller.scanItem(invalidItemID);
-        assertNull(shouldBeNull);
+        try {
+            controller.scanItem(invalidItemID);
+            fail();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     /**

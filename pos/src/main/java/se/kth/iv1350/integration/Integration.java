@@ -12,20 +12,23 @@ import se.kth.iv1350.peripherals.Register;
  * The integration class is an interface between the controller and any external systems
  */
 public class Integration {
+    private static Integration INSTANCE = new Integration();
     private Inventory inventory;
     private Accounting accounting;
     private Discount discount;
     private Register register;
 
-    /**
-     * Initializes a new object of the Integration type.
-     */
-    public Integration()
+    private Integration()
     {
         this.inventory = new Inventory();
         this.accounting = new Accounting();
         this.discount = new Discount();
         this.register = new Register();
+    }
+
+    public static Integration getInstance()
+    {
+        return INSTANCE;
     }
 
     /**
@@ -94,7 +97,11 @@ public class Integration {
         double cost = 1;
         double vat = 0.06;
         String description = "Hello World!";
-        //Stuff
-        return new ItemDTO(id, name, cost, vat, description);
+
+
+        
+
+
+        return new ItemDTO.ItemDTOBuilder(id).setName(name).setCost(cost).setVat(vat).setDescription(description).build();
     }
 }

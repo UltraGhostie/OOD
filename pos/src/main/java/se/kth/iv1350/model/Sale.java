@@ -7,14 +7,14 @@ import java.util.Random;
 
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.SaleDTO;
+import se.kth.iv1350.view.Observer;
 
 /**
  * Contains information about the an ongoing sale.
  */
-public class Sale {
+public class Sale implements Observer{
     private int id;
     private ArrayList<Item> items;
-    private Integer customerID;
     private double totalDiscount;
     
     /**
@@ -34,7 +34,7 @@ public class Sale {
     public SaleDTO dto()
     {
         LocalDateTime dateTime = LocalDateTime.now();
-        return new SaleDTO(id, items, dateTime, customerID, totalDiscount);
+        return new SaleDTO.SaleDTOBuilder(id).setDateTime(dateTime).setItems(items).setTotalDiscount(totalDiscount).build();
     }
 
     /**
@@ -112,6 +112,12 @@ public class Sale {
         totalDiscount += discountInfo.flatDiscount;
         totalDiscount += discountInfo.customerDiscount * totalCost();
         totalDiscount += discountInfo.totalDiscount * totalCost();
+    }
+
+    @Override
+    public void stateChange(SaleDTO saleInfo)
+    {
+        //Stuff
     }
 
     private int totalCost()

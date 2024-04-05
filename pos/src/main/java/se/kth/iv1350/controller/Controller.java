@@ -1,6 +1,7 @@
 package se.kth.iv1350.controller;
 
 import se.kth.iv1350.model.*;
+import se.kth.iv1350.view.Observer;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -13,26 +14,33 @@ import se.kth.iv1350.integration.Integration;
  */
 public class Controller {
     private Integration integration;
+    static Controller INSTANCE = new Controller();
     private Sale currentSale;
+    private ArrayList<Observer> onPaymentSubscribers = new ArrayList<>();
+    private ArrayList<Observer> onUpdateSubscribers = new ArrayList<>();
 
     /**
      * Initializes a new object of the controller type.
      * @param integration The integration used to communicate with external systems.
      */
-    public Controller(Integration integration)
+    private Controller()
     {
-        this.integration = integration;
+        this.integration = Integration.getInstance();
     }
 
+    public static Controller getInstance()
+    {
+        return INSTANCE;
+    }
     /**
      * Creates a new sale.
      * @return A new empty SaleDTO object.
      */
-    public SaleDTO startSale()
+    public void startSale()
     {
         Sale newSale = new Sale();
         this.currentSale = newSale;
-        return newSale.dto();
+        updateOnUpdate();
     }
 
     /**
@@ -40,45 +48,43 @@ public class Controller {
      * @param itemID The unique id of the item to find.
      * @return A new SaleDTO containing information about the updated sale or null if item is not found.
      */
-    public SaleDTO scanItem(int itemID)
+    public void scanItem(int itemID)
     {
         if (currentSale.contains(itemID)) {
             currentSale.increment(itemID);
-            return currentSale.dto();
+            return;
         }
 
         ItemDTO itemInfo = integration.lookup(itemID);
         if (itemInfo == null) {
-            return null;
+            throw new InvalidParameterException();
         }
 
         Item item = new Item(itemInfo);
         currentSale.add(item);
-        return currentSale.dto();
+        updateOnUpdate();
     }
 
     /**
      * Attempts to set the count of the item with the id itemID to the non-zero, non-negative itemCount.
-     * Returns null if unsuccessfull.
      * @param itemID The id of the item to be changed.
      * @param itemCount The new count of the item.
      */
-    public SaleDTO setCount(int itemID, int itemCount)
+    public void setCount(int itemID, int itemCount)
     {
         try {
             currentSale.setCount(itemID, itemCount);
-            return currentSale.dto();
+            updateOnUpdate();
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 
     /**
      * Send a request to the discount system to retrieve discount data about the current sale.
      * @param customerID The id of the customer.
-     * @return A new instance of SaleDTO containing previous data as well as discount data.
      */
-    public SaleDTO discountRequest(int customerID)
+    public void discountRequest(int customerID)
     {
         ArrayList<Integer> itemIDList = new ArrayList<Integer>();
         int totalCost = 0;
@@ -92,7 +98,7 @@ public class Controller {
         }
         DiscountDTO discountInfo = integration.discountRequest(customerID, itemIDArray, totalCost);
         currentSale.applyDiscount(discountInfo);
-        return currentSale.dto();
+        updateOnUpdate();
     }
 
     /**
@@ -110,7 +116,39 @@ public class Controller {
         integration.removeInventory(saleInfo);
         integration.recordSale(saleInfo);
         integration.updateRegister(amount);
+        updateOnPayment();
+        updateOnUpdate();
         currentSale = null;
         return amount - cost;
+    }
+
+    /**
+     * @param observer Adds observer as a subscriber to the event OnPayment.
+     */
+    public void subscribeOnPayment(Observer observer)
+    {
+        this.onPaymentSubscribers.add(observer);
+    }
+
+    /**
+     * @param observer Adds observer as a subscriber to the event OnUpdate.
+     */
+    public void subscribeOnUpdate(Observer observer)
+    {
+        this.onUpdateSubscribers.add(observer);
+    }
+
+    private void updateOnUpdate()
+    {
+        for (Observer observer : onUpdateSubscribers) {
+            observer.stateChange(currentSale.dto());
+        }
+    }
+
+    private void updateOnPayment()
+    {
+        for (Observer observer : onPaymentSubscribers) {
+            observer.stateChange(currentSale.dto());
+        }
     }
 }

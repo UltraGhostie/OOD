@@ -1,15 +1,12 @@
 package se.kth.iv1350.view;
 
-import java.util.ArrayList;
-
 import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.dto.SaleDTO;
-import se.kth.iv1350.model.Item;;
 
 /**
  * Handles data input and output between the user and the controller.
  */
-public class View {
+public class View implements Observer{
     private Controller controller;
     private SaleDTO saleInfo;
     private double change;
@@ -29,6 +26,13 @@ public class View {
         this.testCase();
     }
 
+    @Override
+    public void stateChange(SaleDTO saleInfo)
+    {
+        this.saleInfo = saleInfo;
+        outputSale();
+    }
+
     private void testCase()
     {
         int validItem = 1;
@@ -36,95 +40,35 @@ public class View {
         int count = 15;
         int customerID = 1;
         
-        saleInfo = controller.startSale();
-        outputSale();
+        controller.startSale();
         scanItem(validItem);
         scanItem(validItem);
-        saleInfo = controller.setCount(validItem, count);
-        outputSale();
+        controller.setCount(validItem, count);
         scanItem(invalidItem);
-        saleInfo = controller.discountRequest(customerID);
-        outputSale();
+        controller.discountRequest(customerID);
         payment = 20;
         change = controller.enterPayment(payment);
-        outputSale();
     }
 
     private void scanItem(int itemID)
     {
         String invalidIDMessage = "Invalid Item ID: " + itemID;
         SaleDTO saleDTO;
-        saleDTO = controller.scanItem(itemID);
-        if (saleDTO == null) {
-            out(invalidIDMessage);
-            return;
+        try {
+            controller.scanItem(itemID);
+        } catch (Exception e) {
+            // TODO: handle exception
         }
-        saleInfo = saleDTO;
-        outputSale();
     }
 
 
     private void outputSale()
     {
-        String string;
-
-        string = "Sale id: " + saleInfo.saleID;
-        out(string);
-
-        if (saleInfo.dateTime != null) {
-            int day = saleInfo.dateTime.getDayOfMonth();
-            int month = saleInfo.dateTime.getMonthValue();
-            int year = saleInfo.dateTime.getYear();
-            string = "Date: " + day + "-" + month + "-" + year;
-            out(string);
-            string = "Time: " + saleInfo.dateTime.toLocalTime().toString().split("\\.")[0];
-            out(string);
+        out(saleInfo.toString());
+        if (payment > 0) {
+            out("Paid: " + payment);
+            out("Change: " + change);
         }
-        
-        if (saleInfo.items.size() > 0) {
-            string = "Items: ";
-            out(string);
-            printItems();
-        }
-        
-        double cost = saleInfo.totalCostBeforeDiscount;
-        double discount = saleInfo.totalDiscount;
-        if (discount != 0) {
-            string = "Cost before discount: " + cost;
-            out(string);
-
-            string = "Discount: " + discount;
-            out(string);
-        }
-
-        string = "Cost: " + (cost-discount);
-        out(string);
-
-        if (payment != 0) {
-            string = "Paid: " + payment;
-            out(string);
-    
-            string = "Change: " + change;
-            out(string);
-        }
-        out("");
-    }
-
-    private void printItems()
-    {
-        ArrayList<Item> items = saleInfo.items;
-
-        for (Item item : items) {
-            printItem(item);
-        }
-    }
-
-    private void printItem(Item item)
-    {
-        String string;
-        
-        string = item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + "*" + (1+item.vat);
-        out(string);
     }
 
     private void out(String string)

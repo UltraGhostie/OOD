@@ -13,7 +13,7 @@ public class ItemDTO {
     /**
      * Instantiates a new object of the ItemDTO type containing the information of an item.
      */
-    public ItemDTO(int itemID, String name, double cost, double vat, String description)
+    ItemDTO(int itemID, String name, double cost, double vat, String description)
     {
         this.itemID = itemID;
         this.name = name;
@@ -23,14 +23,50 @@ public class ItemDTO {
     }
 
     /**
-     * Instantiates a new object of the ItemDTO type containing the information of an item.
+     * Builder for ItemDTOs.
      */
-    public ItemDTO(int itemID, String name, int cost, double vat, String description)
-    {
-        this.itemID = itemID;
-        this.name = name;
-        this.cost = (double)cost;
-        this.vat = vat;
-        this.description = description;
+    public static class ItemDTOBuilder {
+        //Required
+        int id;
+
+        //Optional
+        String name;
+        double cost = 0;
+        double vat = 0;
+        String description;
+
+        public ItemDTOBuilder(int id)
+        {
+            this.id = id;
+        }
+
+        public ItemDTOBuilder setName(String name)
+        {
+            this.name = name;
+            return this;
+        }
+
+        public ItemDTOBuilder setCost(double cost)
+        {
+            this.cost = cost;
+            return this;
+        }
+
+        public ItemDTOBuilder setVat(double vat)
+        {
+            this.vat = vat;
+            return this;
+        }
+
+        public ItemDTOBuilder setDescription(String description)
+        {
+            this.description = description;
+            return this;
+        }
+
+        public ItemDTO build()
+        {
+            return new ItemDTO(id, name, id, vat, description);
+        }
     }
 }
