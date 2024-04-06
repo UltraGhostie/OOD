@@ -42,10 +42,10 @@ public class IntegrationTest {
     public void lookupValidIDTest()
     {
         int validID = 1;
-        String expectedName = "Test";
+        String expectedName = "foo";
         double expectedCost = 1;
         double expectedVat = 0.06;
-        String expectedDescription = "Hello World!";
+        String expectedDescription = "bar";
         double acceptableDelta = 0.1;
 
         ItemDTO item = integration.lookup(validID);

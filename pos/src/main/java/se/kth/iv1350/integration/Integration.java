@@ -89,12 +89,36 @@ public class Integration {
 
     private ItemDTO parse(String itemInfo)
     {
-        int id = 1;
-        String name = "Test";
-        double cost = 1;
-        double vat = 0.06;
-        String description = "Hello World!";
-        //Stuff
+        int id = -1;
+        String name = null;
+        double cost = -1;
+        double vat = -1;
+        String description = null;
+        String attributeSeperator = ",";
+        String valueSeperator = ":";
+        String[] strings = itemInfo.split(attributeSeperator);
+        for (String string : strings) {
+            String[] split = string.split(valueSeperator);
+            String attribute = split[0];
+            String value = split[1];
+            switch (attribute) {
+                case "id":
+                    id = Integer.parseInt(value);
+                    break;
+                case "name":
+                    name = value;
+                    break;
+                case "cost":
+                    cost = Double.parseDouble(value);
+                    break;
+                case "vat":
+                    vat = Double.parseDouble(value);
+                    break;
+                case "description":
+                    description = value;
+                    break;
+            }
+        }
         return new ItemDTO(id, name, cost, vat, description);
     }
 }

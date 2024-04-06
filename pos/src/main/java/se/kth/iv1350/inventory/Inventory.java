@@ -32,7 +32,7 @@ public class Inventory {
     {
         for (InvItem item : list) {
             if (item.id == itemID) {
-                String info = "id:"+itemID+",name:"+item.name+",cost:"+item.cost+",vat"+item.vat+",description:"+item.description;
+                String info = "id:"+itemID+",name:"+item.name+",cost:"+item.cost+",vat:"+item.vat+",description:"+item.description;
                 return info;
             }
         }

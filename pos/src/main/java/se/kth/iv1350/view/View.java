@@ -36,6 +36,7 @@ public class View {
         int count = 15;
         int customerID = 1;
         
+        payment = 0;
         saleInfo = controller.startSale();
         outputSale();
         scanItem(validItem);
@@ -68,7 +69,12 @@ public class View {
     {
         String string;
 
-        string = "Sale id: " + saleInfo.saleID;
+        if (payment > 0) {
+            string = "\nReceipt:";
+            out(string);
+        }
+
+        string = "\nSale id: " + saleInfo.saleID;
         out(string);
 
         if (saleInfo.dateTime != null) {
@@ -123,7 +129,7 @@ public class View {
     {
         String string;
         
-        string = item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + "*" + (1+item.vat);
+        string = item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + ", vat: " + (double)Math.round(100*item.cost*item.count()*item.vat)/100 + " (" + item.vat*100 + "%)";
         out(string);
     }
 
