@@ -2,6 +2,8 @@ package se.kth.iv1350.inventory;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -38,8 +40,12 @@ public class InventoryTest {
     public void validIDLookupTest()
     {
         int validID = 1;
-        String item = inventory.lookup(validID);
-        assertNotNull(item);
+        try {
+            inventory.lookup(validID);
+            assertTrue(true);
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     /**
@@ -49,7 +55,11 @@ public class InventoryTest {
     public void invalidIDLookupTest()
     {
         int invalidID = -1234;
-        String item = inventory.lookup(invalidID);
-        assertNull(item);
+        try {
+            inventory.lookup(invalidID);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 }

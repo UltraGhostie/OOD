@@ -16,6 +16,7 @@ public class Sale implements Observer{
     private int id;
     private ArrayList<Item> items;
     private double totalDiscount;
+    private double payment = 0;
     
     /**
      * Initializes a new object of type sale.
@@ -34,7 +35,7 @@ public class Sale implements Observer{
     public SaleDTO dto()
     {
         LocalDateTime dateTime = LocalDateTime.now();
-        return new SaleDTO.SaleDTOBuilder(id).setDateTime(dateTime).setItems(items).setTotalDiscount(totalDiscount).build();
+        return new SaleDTO.SaleDTOBuilder(id).setDateTime(dateTime).setItems(items).setTotalDiscount(totalDiscount).setPayment(payment).build();
     }
 
     /**
@@ -85,15 +86,20 @@ public class Sale implements Observer{
 
     /**
      * Sets the count of the item with id itemID to the non-zero, non-negative integer count.
-     * Throws an InvalidParameterException if itemID is not found or count is below 1.
      * @param itemID The unique id of the item to be changed.
      * @param itemCount The amount of the item. Non-zero, non-negative.
+     * @throws InvalidParameterException If count is below 1 or an item with the given id is not in sale.
      */
     public void setCount(int itemID, int itemCount)
     {
         int oneItem = 1;
-        if (itemCount < oneItem || !contains(itemID)) {
-            throw new InvalidParameterException();
+        String invalidCountMessage = "Illegal value for parameter itemCount.";
+        String invalidItemMessage = "No item with id " + id + " in sale.";
+        if (itemCount < oneItem) {
+            throw new InvalidParameterException(invalidCountMessage);
+        }
+        if (!contains(itemID)) {
+            throw new InvalidParameterException(invalidItemMessage);
         }
 
         for (Item item : items) {
@@ -112,6 +118,14 @@ public class Sale implements Observer{
         totalDiscount += discountInfo.flatDiscount;
         totalDiscount += discountInfo.customerDiscount * totalCost();
         totalDiscount += discountInfo.totalDiscount * totalCost();
+    }
+    
+    /**
+     * @param payment Sets payment to given value.
+     */
+    public void setPayment(double payment)
+    {
+        this.payment = payment;
     }
 
     @Override

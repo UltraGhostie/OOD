@@ -62,14 +62,19 @@ public class ControllerTest implements Observer{
     public void startSaleTest()
     {
         int validItemID = 1;
+        String failMessage = "Sale not reset correctly.";
         controller.startSale();
         assertNotNull(saleInfo);
-        controller.scanItem(validItemID);
-        controller.startSale();
-        for (Item item : saleInfo.items) {
-            fail();
-        }
+        try {
+            controller.scanItem(validItemID);
+            controller.startSale();
+            for (Item item : saleInfo.items) {
+                fail(failMessage);
+            }
         assertTrue(true);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
     }
 
     /**
@@ -80,18 +85,24 @@ public class ControllerTest implements Observer{
     {
         int validItemID = 1;
         String failMessage = "No item with id " + validItemID + " found";
-        controller.scanItem(validItemID);
-        assertNotNull(saleInfo);
-        for (Item item : saleInfo.items) {
-            if (item.itemID == validItemID) {
-                return;
+        try {
+            controller.scanItem(validItemID);
+            assertNotNull(saleInfo);
+            for (Item item : saleInfo.items) {
+                if (item.itemID == validItemID) {
+                    assertTrue(true);
+                    return;
+                }
             }
+            fail(failMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.toString());
         }
-        fail(failMessage);
     }
 
     /**
-     * Checks that scanning an invalid item returns null.
+     * Checks that scanning an invalid item throws an error.
      */
     @Test
     public void scanInvalidItemTest()
@@ -101,7 +112,77 @@ public class ControllerTest implements Observer{
             controller.scanItem(invalidItemID);
             fail();
         } catch (Exception e) {
-            // TODO: handle exception
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Checks that setCount works as intended.
+     */
+    @Test
+    public void setCountTest()
+    {
+        int validItemID = 1;
+        int validCount = 5;
+        String wrongCount = "Item count not equal to validCount (" + validCount +")";
+        controller.subscribeOnUpdate(this);
+        try {
+            controller.scanItem(1);
+            controller.setCount(validItemID, validCount);
+            for (Item item : saleInfo.items) {
+                if (item.count() != 5) {
+                    fail(wrongCount);
+                }
+            }
+            assertTrue(true);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    /**
+     * Checks that setCount throws exception correctly when an invalid count is entered.
+     */
+    @Test
+    public void setInvalidCountTest()
+    {
+        int invalidItemCount = 0;
+        int validItemID = 1;
+        String success = "Managed to set item count to illegal value";
+        controller.subscribeOnUpdate(this);
+        try {
+            try {
+                controller.scanItem(validItemID);
+            } catch (Exception e) {
+                fail(e.toString());
+            }
+            controller.setCount(validItemID, invalidItemCount);
+            fail(success);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Checks that setCount throws exception correctly when an invalid item is entered.
+     */
+    @Test
+    public void setCountInvalidItemTest()
+    {
+        int validCount = 5;
+        int invalidItemID = -1;
+        String success = "Managed to set an invalid items count";
+        controller.subscribeOnUpdate(this);
+        try {
+            try {
+                controller.scanItem(1);
+            } catch (Exception e) {
+                fail(e.toString());
+            }
+            controller.setCount(invalidItemID, validCount);
+            fail(success);
+        } catch (Exception e) {
+            assertTrue(true);
         }
     }
 
@@ -118,28 +199,41 @@ public class ControllerTest implements Observer{
         double itemVat = 1.06;
         double acceptableDelta = 0.1;
         double expectedChange = amount - (itemCost*itemCount*itemVat);
-        controller.scanItem(knownItemID);
-        controller.setCount(knownItemID, itemCount);
-        assertEquals(expectedChange, controller.enterPayment(amount), acceptableDelta);
+        String saleNotNull = "Sale not emptied.";
         try {
             controller.scanItem(knownItemID);
-            fail();
+            controller.setCount(knownItemID, itemCount);
+            controller.enterPayment(amount);
+            double change = saleInfo.change;
+            assertEquals(expectedChange, change, acceptableDelta);
+            try {
+                controller.scanItem(knownItemID);
+                fail(saleNotNull);
+            } catch (Exception e) {
+                assertTrue(true);
+            }
         } catch (Exception e) {
-            assertTrue(true);
+            fail(e.toString());
         }
     }
 
+    /**
+     * Checks that an exception is thrown when an invalid payment is entered.
+     */
     @Test
     public void enterPaymentBadAmountTest()
     {
         double amount = 0;
         int knownItemID = 1;
-        double itemCost = 1;
-        double acceptableDelta = 0.1;
-        controller.scanItem(knownItemID);
+        String failMessage = "Bad payment accepted.";
         try {
+            try {
+                controller.scanItem(knownItemID);
+            } catch (Exception e) {
+                fail(e.toString());
+            }
             controller.enterPayment(amount);
-            fail();
+            fail(failMessage);
         } catch (Exception e) {
             assertTrue(true);
         }

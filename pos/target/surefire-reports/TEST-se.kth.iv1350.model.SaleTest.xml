@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="se.kth.iv1350.model.SaleTest" time="0" tests="7" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="se.kth.iv1350.model.SaleTest" time="0.001" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="windows"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -17,7 +17,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="SE"/>
     <property name="sun.boot.library.path" value="C:\Java11\jdk-11.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\theod\AppData\Local\Temp\surefire16007317003074914818\surefirebooter13332233842180169857.jar C:\Users\theod\AppData\Local\Temp\surefire16007317003074914818 2024-04-03T13-20-28_011-jvmRun1 surefire521841890940543075tmp surefire_0364282009167386053tmp"/>
+    <property name="sun.java.command" value="C:\Users\theod\AppData\Local\Temp\surefire10258403797529885856\surefirebooter5715584421776703624.jar C:\Users\theod\AppData\Local\Temp\surefire10258403797529885856 2024-04-05T17-18-52_990-jvmRun1 surefire10679101636398277140tmp surefire_09665266819411378583tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="c:\Users\theod\Desktop\NätkomProj\OOD\pos\target\test-classes;c:\Users\theod\Desktop\NätkomProj\OOD\pos\target\classes;C:\Users\theod\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\theod\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="C:\Users\theod\AppData\Local\Temp\surefire16007317003074914818\surefirebooter13332233842180169857.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\theod\AppData\Local\Temp\surefire10258403797529885856\surefirebooter5715584421776703624.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="11.0.2+9"/>
@@ -62,7 +62,8 @@
   </properties>
   <testcase name="addTest" classname="se.kth.iv1350.model.SaleTest" time="0"/>
   <testcase name="applyDiscountTest" classname="se.kth.iv1350.model.SaleTest" time="0"/>
-  <testcase name="setBadCountTest" classname="se.kth.iv1350.model.SaleTest" time="0"/>
+  <testcase name="setBadCountTest" classname="se.kth.iv1350.model.SaleTest" time="0.001"/>
+  <testcase name="setBadItemTest" classname="se.kth.iv1350.model.SaleTest" time="0"/>
   <testcase name="containsFalseTest" classname="se.kth.iv1350.model.SaleTest" time="0"/>
   <testcase name="addAnother" classname="se.kth.iv1350.model.SaleTest" time="0"/>
   <testcase name="setGoodCountTest" classname="se.kth.iv1350.model.SaleTest" time="0"/>

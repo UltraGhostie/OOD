@@ -100,11 +100,30 @@ public class SaleTest implements Observer{
     @Test
     public void setBadCountTest()
     {
-        int goodCount = -5;
+        int goodCount = 5;
+        int badID = -1;
+        String success = "Managed to set value on item that should not exist.";
         sale.add(item);
         try {
-            sale.setCount(item.itemID, goodCount);
-            fail();
+            sale.setCount(badID, goodCount);
+            fail(success);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Checks that the setCount function does not work on items that do not exist.
+     */
+    @Test
+    public void setBadItemTest()
+    {
+        int badCount = -5;
+        String success = "Managed to set item to illegal value.";
+        sale.add(item);
+        try {
+            sale.setCount(item.itemID, badCount);
+            fail(success);
         } catch (Exception e) {
             assertTrue(true);
         }

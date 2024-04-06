@@ -1,11 +1,12 @@
 package se.kth.iv1350.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.After;
+import java.security.InvalidParameterException;
+
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,30 +45,39 @@ public class IntegrationTest {
     public void lookupValidIDTest()
     {
         int validID = 1;
-        String expectedName = "Test";
+        String expectedName = "foo";
         double expectedCost = 1;
         double expectedVat = 0.06;
-        String expectedDescription = "Hello World!";
+        String expectedDescription = "bar";
         double acceptableDelta = 0.1;
 
-        ItemDTO item = integration.lookup(validID);
-        assertEquals(validID, item.itemID);
-        assertEquals(expectedName, item.name);
-        assertEquals(expectedCost, item.cost, acceptableDelta);
-        assertEquals(expectedVat, item.vat, acceptableDelta);
-        assertEquals(expectedDescription, item.description);
+        try {
+            ItemDTO item = integration.lookup(validID);
+            assertEquals(validID, item.itemID);
+            assertEquals(expectedName, item.name);
+            assertEquals(expectedCost, item.cost, acceptableDelta);
+            assertEquals(expectedVat, item.vat, acceptableDelta);
+            assertEquals(expectedDescription, item.description);
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     /**
-     * Checks that null is returned when no item is found.
+     * Checks that error is thrown when no item is found.
      */
     @Test
     public void lookupInvalidIDTest()
     {
         int invalidID = -1234;
-
-        ItemDTO item = integration.lookup(invalidID);
-        assertNull(item);
+        try {
+            ItemDTO item = integration.lookup(invalidID);
+            fail();
+        } catch (InvalidParameterException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     /**

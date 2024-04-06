@@ -5,6 +5,7 @@ import se.kth.iv1350.view.Observer;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import se.kth.iv1350.dto.*;
 import se.kth.iv1350.integration.Integration;
@@ -47,30 +48,32 @@ public class Controller {
      * Adds an item with the itemID if it is found. If the itemID is invalid returns null.
      * @param itemID The unique id of the item to find.
      * @return A new SaleDTO containing information about the updated sale or null if item is not found.
+     * @throws TimeoutException If server is unable to be reached.
+     * @throws InvalidParameterException If an invalid id is entered or there is no item with id itemID.
      */
-    public void scanItem(int itemID)
+    public void scanItem(int itemID) throws TimeoutException, InvalidParameterException
     {
         if (currentSale.contains(itemID)) {
             currentSale.increment(itemID);
             return;
         }
-
-        ItemDTO itemInfo = integration.lookup(itemID);
-        if (itemInfo == null) {
-            throw new InvalidParameterException();
+        try {  
+            ItemDTO itemInfo = integration.lookup(itemID);
+            Item item = new Item(itemInfo);
+            currentSale.add(item);
+            updateOnUpdate();
+        } catch (Exception e) {
+            throw e;
         }
-
-        Item item = new Item(itemInfo);
-        currentSale.add(item);
-        updateOnUpdate();
     }
 
     /**
      * Attempts to set the count of the item with the id itemID to the non-zero, non-negative itemCount.
      * @param itemID The id of the item to be changed.
      * @param itemCount The new count of the item.
+     * @throws InvalidParameterException If count is below 1 or an item with the given id is not in sale.
      */
-    public void setCount(int itemID, int itemCount)
+    public void setCount(int itemID, int itemCount) throws InvalidParameterException
     {
         try {
             currentSale.setCount(itemID, itemCount);
@@ -102,24 +105,26 @@ public class Controller {
     }
 
     /**
-     * Completes the sale and returns the amount of change to be given.
+     * Completes the sale by adding payment and change to sale.
      * @param amount The payment given by the customer.
-     * @return The change to be given to the customer.
      */
-    public double enterPayment(double amount)
+    public void enterPayment(double amount)
     {
         SaleDTO saleInfo = currentSale.dto();
+        String badPaymentMessage = "Payment amount is lower than cost.";
         double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
         if (amount - cost < 0) {
-            throw new InvalidParameterException("Payment requirements not met.");
+            throw new InvalidParameterException(badPaymentMessage);
         }
+        currentSale.setPayment(amount);
+        saleInfo = currentSale.dto();
         integration.removeInventory(saleInfo);
         integration.recordSale(saleInfo);
         integration.updateRegister(amount);
         updateOnPayment();
         updateOnUpdate();
         currentSale = null;
-        return amount - cost;
+        return;
     }
 
     /**

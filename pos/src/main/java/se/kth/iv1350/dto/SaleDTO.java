@@ -14,6 +14,8 @@ public class SaleDTO {
     public final double totalDiscount;
     public final double totalCostBeforeDiscount;
     public final List<Item> items;
+    public final double payment;
+    public final double change;
 
     /**
      * Initializes a filled new instance of the type SaleDTO.
@@ -23,7 +25,7 @@ public class SaleDTO {
      * @param customerID The id of the customer in the sale. Null if unknown.
      * @param totalDiscount The total discount in currency. Null if unknown.
      */
-    SaleDTO(int saleID, List<Item> items, LocalDateTime dateTime, Integer customerID, double totalDiscount)
+    SaleDTO(int saleID, List<Item> items, LocalDateTime dateTime, Integer customerID, double totalDiscount, double payment)
     {
         this.saleID = saleID;
         this.items = items;
@@ -31,13 +33,19 @@ public class SaleDTO {
         this.customerID = customerID;
         this.totalDiscount = totalDiscount;
         this.totalCostBeforeDiscount = calculateTotalCost();
+        this.payment = payment;
+        this.change = payment-totalCostBeforeDiscount+totalDiscount;
     }
 
     public String toString()
     {
         String string = "";
 
-        string += "Sale id: " + saleID;
+        if (payment > 0) {
+            string += "\nReceipt:";
+        }
+
+        string += "\nSale id: " + saleID;
 
         if (dateTime != null) {
             int day = dateTime.getDayOfMonth();
@@ -52,7 +60,7 @@ public class SaleDTO {
         if (items.size() > 0) {
             string += "\nItems: ";
             for (Item item : items) {
-                string += "\n" + item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + "*" + (1+item.vat);
+                string += "\n" + item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + ", vat: " + ((double)Math.round(item.cost*item.count()*item.vat*100))/100 + " (" + (item.vat*100) + "%)";
             }
         }
         
@@ -66,7 +74,12 @@ public class SaleDTO {
             
         }
 
-        string += "\nCost: " + (cost-discount);
+        string += "\nTotal: " + (cost-discount);
+        if (payment > 0) {
+            string += "\nPaid: " + payment;
+            string += "\nChange: " + change;
+        }
+
         return string;
     }
 
@@ -79,6 +92,7 @@ public class SaleDTO {
         LocalDateTime dateTime;
         Integer customerID;
         double totalDiscount = 0;
+        double payment = 0;
 
         public SaleDTOBuilder(int saleID)
         {
@@ -109,9 +123,15 @@ public class SaleDTO {
             return this;
         }
 
+        public SaleDTOBuilder setPayment(double payment)
+        {
+            this.payment = payment;
+            return this;
+        }
+
         public SaleDTO build()
         {
-            return new SaleDTO(saleID, items, dateTime, customerID, totalDiscount);
+            return new SaleDTO(saleID, items, dateTime, customerID, totalDiscount, payment);
         }
     }
 
