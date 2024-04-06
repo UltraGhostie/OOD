@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="se.kth.iv1350.model.SaleTest" time="0" tests="7" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="se.kth.iv1350.model.SaleTest" time="0.021" tests="7" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="windows"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -17,7 +17,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="SE"/>
     <property name="sun.boot.library.path" value="C:\Java11\jdk-11.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\theod\AppData\Local\Temp\surefire16007317003074914818\surefirebooter13332233842180169857.jar C:\Users\theod\AppData\Local\Temp\surefire16007317003074914818 2024-04-03T13-20-28_011-jvmRun1 surefire521841890940543075tmp surefire_0364282009167386053tmp"/>
+    <property name="sun.java.command" value="C:\Users\theod\AppData\Local\Temp\surefire7648387471814590290\surefirebooter1618973566305787353.jar C:\Users\theod\AppData\Local\Temp\surefire7648387471814590290 2024-04-06T12-06-10_674-jvmRun1 surefire6509438803632281292tmp surefire_01855855027285690589tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="c:\Users\theod\Desktop\NätkomProj\OOD\pos\target\test-classes;c:\Users\theod\Desktop\NätkomProj\OOD\pos\target\classes;C:\Users\theod\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\theod\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="C:\Users\theod\AppData\Local\Temp\surefire16007317003074914818\surefirebooter13332233842180169857.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\theod\AppData\Local\Temp\surefire7648387471814590290\surefirebooter1618973566305787353.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="11.0.2+9"/>
@@ -53,7 +53,7 @@
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
     <property name="sun.os.patch.level" value=""/>
-    <property name="java.library.path" value="C:\Java11\jdk-11.0.2\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\ImageMagick-7.1.1-Q16-HDRI;C:\Program Files (x86)\VMware\VMware Player\bin\;C:\Java11\jdk-11.0.2\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\110\Tools\Binn\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\dotnet\;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Bin;C:\Program Files\PuTTY\;C:\Program Files\apache-maven-3.9.6\bin;C:\Program Files\Elixir\bin;C:\Program Files\Erlang OTP\bin;C:\Users\theod\AppData\Local\Microsoft\WindowsApps;C:\Users\theod\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\theod\AppData\Local\GitHubDesktop\bin;C:\Users\theod\.dotnet\tools;C:\Program Files\PostgreSQL\16\bin;C:\Program Files\PostgreSQL\16\lib;C:\Java11\jdk-11.0.2\bin;C:\Program Files (x86)\Nmap;."/>
+    <property name="java.library.path" value="C:\Java11\jdk-11.0.2\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\ImageMagick-7.1.1-Q16-HDRI;C:\Program Files (x86)\VMware\VMware Player\bin\;C:\Java11\jdk-11.0.2\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\110\Tools\Binn\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\Tools\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\dotnet\;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Bin;C:\Program Files\PuTTY\;C:\Program Files\apache-maven-3.9.6\bin;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\Elixir\bin;C:\Program Files\Erlang OTP\bin;C:\Users\theod\AppData\Local\Microsoft\WindowsApps;C:\Users\theod\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\theod\AppData\Local\GitHubDesktop\bin;C:\Users\theod\.dotnet\tools;C:\Program Files\PostgreSQL\16\bin;C:\Program Files\PostgreSQL\16\lib;C:\Java11\jdk-11.0.2\bin;C:\Program Files (x86)\Nmap;C:\Users\theod\AppData\Roaming\npm;."/>
     <property name="java.vendor" value="Oracle Corporation"/>
     <property name="java.vm.info" value="mixed mode"/>
     <property name="java.vm.version" value="11.0.2+9"/>

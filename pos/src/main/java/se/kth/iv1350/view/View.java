@@ -27,6 +27,7 @@ public class View {
         this.saleInfo = noSale;
         this.controller = controller;
         this.testCase();
+        this.testCase();
     }
 
     private void testCase()
