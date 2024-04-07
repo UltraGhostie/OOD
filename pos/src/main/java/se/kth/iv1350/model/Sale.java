@@ -43,7 +43,7 @@ public class Sale {
      * @param itemID The id that is searched for.
      * @return True if an item is found, otherwise false.
      */
-    public boolean contains(int itemID)
+    private boolean contains(int itemID)
     {
         boolean found = true;
         for (Item item : items) {
@@ -71,21 +71,6 @@ public class Sale {
         }
         Item item = new Item(itemInfo);
         items.add(item);
-    }
-
-    /**
-     * Increments the count of the item with the id itemID
-     * @param itemID The id of the item whose count should be increased.
-     */
-    public void increment(int itemID)
-    {
-        for (Item currentItem : items) {
-            if (currentItem.itemID == itemID) {
-                currentItem.increment();
-                return;
-            }
-        }
-        throw new InvalidParameterException("No item with id: " + itemID + " in sale.");
     }
 
     /**

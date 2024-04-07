@@ -17,7 +17,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="SE"/>
     <property name="sun.boot.library.path" value="C:\Java11\jdk-11.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\theod\AppData\Local\Temp\surefire7648387471814590290\surefirebooter1618973566305787353.jar C:\Users\theod\AppData\Local\Temp\surefire7648387471814590290 2024-04-06T12-06-10_674-jvmRun1 surefire6509438803632281292tmp surefire_01855855027285690589tmp"/>
+    <property name="sun.java.command" value="C:\Users\theod\AppData\Local\Temp\surefire6146054459923146375\surefirebooter8432752812984655584.jar C:\Users\theod\AppData\Local\Temp\surefire6146054459923146375 2024-04-07T17-15-41_914-jvmRun1 surefire595703440649426889tmp surefire_010535874783328868881tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="c:\Users\theod\Desktop\NätkomProj\OOD\pos\target\test-classes;c:\Users\theod\Desktop\NätkomProj\OOD\pos\target\classes;C:\Users\theod\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\theod\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="C:\Users\theod\AppData\Local\Temp\surefire7648387471814590290\surefirebooter1618973566305787353.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\theod\AppData\Local\Temp\surefire6146054459923146375\surefirebooter8432752812984655584.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="11.0.2+9"/>

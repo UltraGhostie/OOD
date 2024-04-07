@@ -51,16 +51,6 @@ public class SaleTest {
         item = null;
     }
 
-    /**
-     * Checks that the contains() function returns false correctly.
-     */
-    @Test
-    public void containsFalseTest()
-    {
-        int badId = -124;
-        sale.add(itemDTO);
-        assertFalse(sale.contains(badId));
-    }
 
     /**
      * Checks that the add() function and contains() function are consistent
@@ -69,7 +59,13 @@ public class SaleTest {
     public void addTest()
     {
         sale.add(itemDTO);
-        assertTrue(sale.contains(item.itemID));
+        for (ItemDTO item : sale.dto().items) {
+            if (item.itemID == itemDTO.itemID) {
+                assertTrue(true);
+                return;
+            }
+        }
+        fail();
     }
 
     /**
