@@ -3,6 +3,8 @@ package se.kth.iv1350.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.junit.Test;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
+import se.kth.iv1350.model.Item;
 
 /**
  * Unit tests for Integration.
@@ -79,8 +82,15 @@ public class IntegrationTest {
         int expectedFlatDiscount = 15;
         int customerID = 1;
         int totalCost = 60;
-        int[] itemIDs = { 1, 2, 3 };
-        DiscountDTO discountInfo = integration.discountRequest(customerID, itemIDs, totalCost);
+        ItemDTO item1 = new ItemDTO(1, null, 20, 0, null);
+        ItemDTO item2 = new ItemDTO(2, null, 20, 0, null);
+        ItemDTO item3 = new ItemDTO(3, null, 20, 0, null);
+        ArrayList<Item> items = new ArrayList<>();
+        items.add(new Item(item1));
+        items.add(new Item(item2));
+        items.add(new Item(item3));
+        SaleDTO saleDTO = new SaleDTO(totalCost, items, null, customerID, 0);
+        DiscountDTO discountInfo = integration.discountRequest(saleDTO);
         assertEquals(expectedCustomerDiscount, discountInfo.customerDiscount, 0.1);
         assertEquals(expectedTotalDiscount, discountInfo.totalDiscount, 0.1);
         assertEquals(expectedFlatDiscount, discountInfo.flatDiscount);

@@ -1,5 +1,7 @@
 package se.kth.iv1350.integration;
 
+import java.util.ArrayList;
+
 import se.kth.iv1350.accounting.Accounting;
 import se.kth.iv1350.discount.Discount;
 import se.kth.iv1350.dto.DiscountDTO;
@@ -51,11 +53,22 @@ public class Integration {
      * @param totalCost The total cost of the items in the sale, excluding vat.
      * @return An object containing the data of the varius discounts.
      */
-    public DiscountDTO discountRequest(int customerID, int[] itemIDs, int totalCost)
+    public DiscountDTO discountRequest(SaleDTO saleInfo)
     {
-        double customerDiscount = discount.customerDiscount(customerID);
-        double totalCostDiscount = discount.totalCostDiscount(totalCost);
-        int flatDiscount = discount.flatDiscount(itemIDs);
+        double customerDiscount = 0;
+        if (saleInfo.customerID != null) {
+            customerDiscount = discount.customerDiscount(saleInfo.customerID);
+        }
+        double totalCostDiscount = discount.totalCostDiscount(saleInfo.totalCostBeforeDiscount);
+        ArrayList<Integer> itemIDs = new ArrayList<>();
+        for (ItemDTO itemInfo : saleInfo.items) {
+            itemIDs.add(itemInfo.itemID);
+        }
+        int[] ids = new int[itemIDs.size()];
+        for (int i = 0; i < itemIDs.size(); i++) {
+            ids[i] = itemIDs.get(i);
+        }
+        int flatDiscount = discount.flatDiscount(ids);
         DiscountDTO discountInfo = new DiscountDTO(customerDiscount, totalCostDiscount, flatDiscount);
         return discountInfo;
     }

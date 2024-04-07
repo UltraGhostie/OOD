@@ -10,9 +10,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.integration.Integration;
-import se.kth.iv1350.model.Item;
 
 /**
  * Unit tests for Controller.
@@ -53,7 +53,7 @@ public class ControllerTest {
         assertNotNull(saleData);
         controller.scanItem(validItemID);
         saleData = controller.startSale();
-        for (Item item : saleData.items) {
+        for (ItemDTO item : saleData.items) {
             fail();
         }
         assertTrue(true);
@@ -69,7 +69,7 @@ public class ControllerTest {
         String failMessage = "No item with id " + validItemID + " found";
         SaleDTO saleInfo = controller.scanItem(validItemID);
         assertNotNull(saleInfo);
-        for (Item item : saleInfo.items) {
+        for (ItemDTO item : saleInfo.items) {
             if (item.itemID == validItemID) {
                 return;
             }
@@ -105,8 +105,8 @@ public class ControllerTest {
         controller.setCount(knownItemID, itemCount);
         assertEquals(expectedChange, controller.enterPayment(amount), acceptableDelta);
         try {
-            controller.scanItem(knownItemID);
-            fail();
+            SaleDTO saleInfo = controller.scanItem(knownItemID);
+            assertNull(saleInfo);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -117,8 +117,6 @@ public class ControllerTest {
     {
         double amount = 0;
         int knownItemID = 1;
-        double itemCost = 1;
-        double acceptableDelta = 0.1;
         controller.scanItem(knownItemID);
         try {
             controller.enterPayment(amount);

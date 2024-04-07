@@ -34,7 +34,7 @@ public class Item {
      */
     public ItemDTO dto()
     {
-        return new ItemDTO(itemID, name, cost, vat, description);
+        return new ItemDTO(itemID, name, cost, vat, description, count);
     }
 
     /**

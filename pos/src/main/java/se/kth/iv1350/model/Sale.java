@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import se.kth.iv1350.dto.DiscountDTO;
+import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 
 /**
@@ -55,16 +56,20 @@ public class Sale {
 
     /**
      * Adds the item to the sale
-     * @param item The item to add to the sale.
+     * @param itemInfo The item to add to the sale.
      */
-    public void add(Item item)
+    public void add(ItemDTO itemInfo)
     {
+        if (itemInfo == null) {
+            throw new InvalidParameterException();
+        }
         for (Item currentItem : items) {
-            if (currentItem.itemID == item.itemID) {
-                increment(item.itemID);
+            if (currentItem.itemID == itemInfo.itemID) {
+                currentItem.increment();
                 return;
             }
         }
+        Item item = new Item(itemInfo);
         items.add(item);
     }
 
@@ -112,6 +117,21 @@ public class Sale {
         totalDiscount += discountInfo.flatDiscount;
         totalDiscount += discountInfo.customerDiscount * totalCost();
         totalDiscount += discountInfo.totalDiscount * totalCost();
+    }
+
+    /**
+     * Set payment.
+     * @param amount The payment amount
+     * @return The amount of change
+     */
+    public double setPayment(double amount)
+    {
+        SaleDTO saleInfo = dto();
+        double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
+        if (amount - cost < 0) {
+            throw new InvalidParameterException("Payment requirements not met.");
+        }
+        return amount - cost;
     }
 
     private int totalCost()

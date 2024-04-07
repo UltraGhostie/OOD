@@ -20,7 +20,7 @@ public class Discount {
      * @param totalCost The total cost of the sale.
      * @return A double that represents the percentage of the total price that should be removed.
      */
-    public double totalCostDiscount(int totalCost)
+    public double totalCostDiscount(double totalCost)
     {
         return checkTotalDiscounts(totalCost);
     }
@@ -43,7 +43,7 @@ public class Discount {
         return 0;
     }
 
-    private double checkTotalDiscounts(int totalCost)
+    private double checkTotalDiscounts(double totalCost)
     {
         if (totalCost > 50) {
             return 0.1;

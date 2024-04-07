@@ -3,8 +3,8 @@ package se.kth.iv1350.view;
 import java.util.ArrayList;
 
 import se.kth.iv1350.controller.Controller;
+import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
-import se.kth.iv1350.model.Item;;
 
 /**
  * Handles data input and output between the user and the controller.
@@ -119,18 +119,18 @@ public class View {
 
     private void printItems()
     {
-        ArrayList<Item> items = saleInfo.items;
+        ArrayList<ItemDTO> items = saleInfo.items;
 
-        for (Item item : items) {
+        for (ItemDTO item : items) {
             printItem(item);
         }
     }
 
-    private void printItem(Item item)
+    private void printItem(ItemDTO item)
     {
         String string;
         
-        string = item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + ", vat: " + (double)Math.round(100*item.cost*item.count()*item.vat)/100 + " (" + item.vat*100 + "%)";
+        string = item.name + "*" + item.count + ", " + item.cost + "*" + item.count + ", vat: " + (double)Math.round(100*item.cost*item.count*item.vat)/100 + " (" + item.vat*100 + "%)";
         out(string);
     }
 

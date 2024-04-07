@@ -1,11 +1,7 @@
 package se.kth.iv1350.controller;
 
-import se.kth.iv1350.model.*;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-
-import se.kth.iv1350.dto.*;
+import se.kth.iv1350.model.Sale;
+import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.integration.Integration;
 
 /**
@@ -42,19 +38,12 @@ public class Controller {
      */
     public SaleDTO scanItem(int itemID)
     {
-        if (currentSale.contains(itemID)) {
-            currentSale.increment(itemID);
+        try {
+            currentSale.add(integration.lookup(itemID));
             return currentSale.dto();
-        }
-
-        ItemDTO itemInfo = integration.lookup(itemID);
-        if (itemInfo == null) {
+        } catch (Exception e) {
             return null;
         }
-
-        Item item = new Item(itemInfo);
-        currentSale.add(item);
-        return currentSale.dto();
     }
 
     /**
@@ -80,18 +69,7 @@ public class Controller {
      */
     public SaleDTO discountRequest(int customerID)
     {
-        ArrayList<Integer> itemIDList = new ArrayList<Integer>();
-        int totalCost = 0;
-        for (Item item : currentSale.dto().items) {
-            itemIDList.add(item.itemID);
-            totalCost += item.cost * item.count();
-        }
-        int[] itemIDArray = new int[itemIDList.size()];
-        for (int i = 0; i < itemIDList.size(); i++) {
-            itemIDArray[i] = itemIDList.get(i);
-        }
-        DiscountDTO discountInfo = integration.discountRequest(customerID, itemIDArray, totalCost);
-        currentSale.applyDiscount(discountInfo);
+        currentSale.applyDiscount(integration.discountRequest(currentSale.dto()));
         return currentSale.dto();
     }
 
@@ -102,15 +80,16 @@ public class Controller {
      */
     public double enterPayment(double amount)
     {
-        SaleDTO saleInfo = currentSale.dto();
-        double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
-        if (amount - cost < 0) {
-            throw new InvalidParameterException("Payment requirements not met.");
+        try {
+            double change = currentSale.setPayment(amount);
+            SaleDTO saleInfo = currentSale.dto();
+            integration.removeInventory(saleInfo);
+            integration.recordSale(saleInfo);
+            integration.updateRegister(amount);
+            currentSale = null;
+            return change;
+        } catch (Exception e) {
+            throw e;
         }
-        integration.removeInventory(saleInfo);
-        integration.recordSale(saleInfo);
-        integration.updateRegister(amount);
-        currentSale = null;
-        return amount - cost;
     }
 }

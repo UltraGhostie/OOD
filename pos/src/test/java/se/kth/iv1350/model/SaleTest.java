@@ -23,6 +23,7 @@ import se.kth.iv1350.integration.Integration;
 public class SaleTest {
     Sale sale;
     Item item;
+    ItemDTO itemDTO;
 
     /**
      * Creates new objects for sale and item.
@@ -36,7 +37,7 @@ public class SaleTest {
         double vat = 0.06;
         String description = "test";
         sale = new Sale();
-        ItemDTO itemDTO = new ItemDTO(itemId, name, cost, vat, description);
+        itemDTO = new ItemDTO(itemId, name, cost, vat, description);
         item = new Item(itemDTO);
     }
 
@@ -57,7 +58,7 @@ public class SaleTest {
     public void containsFalseTest()
     {
         int badId = -124;
-        sale.add(item);
+        sale.add(itemDTO);
         assertFalse(sale.contains(badId));
     }
 
@@ -67,7 +68,7 @@ public class SaleTest {
     @Test
     public void addTest()
     {
-        sale.add(item);
+        sale.add(itemDTO);
         assertTrue(sale.contains(item.itemID));
     }
 
@@ -78,10 +79,10 @@ public class SaleTest {
     public void setGoodCountTest()
     {
         int goodCount = 5;
-        sale.add(item);
+        sale.add(itemDTO);
         sale.setCount(item.itemID, goodCount);
-        for (Item item : sale.dto().items) {
-            assertEquals(goodCount, item.count());
+        for (ItemDTO item : sale.dto().items) {
+            assertEquals(goodCount, item.count);
         }
     }
     
@@ -92,7 +93,7 @@ public class SaleTest {
     public void setBadCountTest()
     {
         int goodCount = -5;
-        sale.add(item);
+        sale.add(itemDTO);
         try {
             sale.setCount(item.itemID, goodCount);
             fail();
@@ -109,13 +110,13 @@ public class SaleTest {
     {
         int oneItem = 1;
         int twoItems = 2;
-        sale.add(item);
-        for (Item item : sale.dto().items) {
-            assertEquals(oneItem, item.count());
+        sale.add(itemDTO);
+        for (ItemDTO item : sale.dto().items) {
+            assertEquals(oneItem, item.count);
         }
-        sale.add(item);
-        for (Item item : sale.dto().items) {
-            assertEquals(twoItems, item.count());
+        sale.add(itemDTO);
+        for (ItemDTO item : sale.dto().items) {
+            assertEquals(twoItems, item.count);
         }
     }
 
@@ -150,7 +151,7 @@ public class SaleTest {
         Controller controller = new Controller(new Integration());
         controller.startSale();
         SaleDTO itemContainer = controller.scanItem(knownItemID);
-        Item item = itemContainer.items.get(0);
+        ItemDTO item = itemContainer.items.get(0);
         sale.add(item);
         sale.setCount(knownItemID, itemCount);
         sale.applyDiscount(discountInfo);
