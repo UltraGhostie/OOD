@@ -88,7 +88,7 @@ public class SaleTest {
     @Test
     public void setBadCountTest()
     {
-        int goodCount = -5;
+        int badCount = -5;
         sale.add(itemDTO);
         try {
             sale.setCount(item.itemID, goodCount);

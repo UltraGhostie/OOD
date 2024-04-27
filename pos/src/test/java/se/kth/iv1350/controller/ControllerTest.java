@@ -112,6 +112,9 @@ public class ControllerTest {
         }
     }
 
+    /**
+     * Checks that enterPayment does not accept an invalid payment amount.
+     */
     @Test
     public void enterPaymentBadAmountTest()
     {
