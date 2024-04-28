@@ -65,7 +65,7 @@ public class SaleTest {
                 return;
             }
         }
-        fail();
+        fail("Failed to add item in sale.");
     }
 
     /**
@@ -91,8 +91,8 @@ public class SaleTest {
         int badCount = -5;
         sale.add(itemDTO);
         try {
-            sale.setCount(item.itemID, goodCount);
-            fail();
+            sale.setCount(item.itemID, badCount);
+            fail("Set count to invalid state.");
         } catch (Exception e) {
             assertTrue(true);
         }

@@ -1,5 +1,7 @@
 package se.kth.iv1350.view;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import se.kth.iv1350.controller.Controller;
@@ -30,7 +32,10 @@ public class View {
         this.testCase();
     }
 
-    private void testCase()
+    /**
+     * Runs the testcase.
+     */
+    public void testCase()
     {
         int validItem = 1;
         int invalidItem = -1;

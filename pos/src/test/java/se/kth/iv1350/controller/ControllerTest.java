@@ -54,7 +54,7 @@ public class ControllerTest {
         controller.scanItem(validItemID);
         saleData = controller.startSale();
         for (ItemDTO item : saleData.items) {
-            fail();
+            fail("Sale not created empty.");
         }
         assertTrue(true);
     }
@@ -66,7 +66,6 @@ public class ControllerTest {
     public void scanValidItemTest()
     {
         int validItemID = 1;
-        String failMessage = "No item with id " + validItemID + " found";
         SaleDTO saleInfo = controller.scanItem(validItemID);
         assertNotNull(saleInfo);
         for (ItemDTO item : saleInfo.items) {
@@ -74,7 +73,7 @@ public class ControllerTest {
                 return;
             }
         }
-        fail(failMessage);
+        fail("No item with id " + validItemID + " found");
     }
 
     /**
@@ -123,7 +122,7 @@ public class ControllerTest {
         controller.scanItem(knownItemID);
         try {
             controller.enterPayment(amount);
-            fail();
+            fail("Entered invalid payment without exception.");
         } catch (Exception e) {
             assertTrue(true);
         }

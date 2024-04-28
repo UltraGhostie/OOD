@@ -1,7 +1,13 @@
 package se.kth.iv1350.view;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.PrintStream;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.fail;
 
 import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.integration.Integration;
@@ -12,6 +18,9 @@ import se.kth.iv1350.integration.Integration;
 public class ViewTest {
     static Controller controller;
     static View view;
+    static PrintStream standard;
+    static PrintStream fileStream;
+    static File temp;
 
     /**
      * Initializes temporary variables.
@@ -22,6 +31,15 @@ public class ViewTest {
         controller = new Controller(new Integration());
         controller.startSale();
         view = new View(controller);
+        temp = new File("./test.txt");
+        standard = System.out;
+        try {
+            temp.createNewFile();
+            fileStream = new PrintStream(temp);
+            System.setOut(fileStream);
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     /**
@@ -32,5 +50,10 @@ public class ViewTest {
     {
         view = null;
         controller = null;
+        fileStream.close();
+        System.setOut(standard);
+        fileStream = null;
+        System.gc();
+        temp.delete();
     }
 }
