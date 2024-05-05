@@ -1,5 +1,3 @@
-
-pos/target/logdump.txt
-pos/target/TotalRev.txt
+pos/target/*
 pos/TotalRev.txt
 pos/logdump.txt
