@@ -1,6 +1,7 @@
 package se.kth.iv1350.integration;
 
-import java.util.ArrayList;
+import java.security.InvalidParameterException;
+import java.util.concurrent.TimeoutException;
 
 import se.kth.iv1350.accounting.Accounting;
 import se.kth.iv1350.discount.Discount;
@@ -8,21 +9,20 @@ import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.inventory.Inventory;
+import se.kth.iv1350.inventory.Inventory.ItemNotFoundException;
 import se.kth.iv1350.peripherals.Register;
 
 /**
  * The integration class is an interface between the controller and any external systems
  */
 public class Integration {
+    private static Integration INSTANCE = new Integration();
     private Inventory inventory;
     private Accounting accounting;
     private Discount discount;
     private Register register;
 
-    /**
-     * Initializes a new object of the Integration type.
-     */
-    public Integration()
+    private Integration()
     {
         this.inventory = new Inventory();
         this.accounting = new Accounting();
@@ -30,20 +30,31 @@ public class Integration {
         this.register = new Register();
     }
 
+    public static Integration getInstance()
+    {
+        return INSTANCE;
+    }
+
     /**
      * Queries the inventory database for information about the item with id itemID
      * @param itemID The id that is queried.
      * @return A new ItemDTO containing information about the item.
+     * @throws TimeoutException If server is unable to be reached.
+     * @throws InvalidParameterException If an invalid id is entered or there is no item with id itemID.
      */
-    public ItemDTO lookup(int itemID)
+    public ItemDTO lookup(int itemID) throws InvalidParameterException, TimeoutException
     {
-        String information = inventory.lookup(itemID);
-        
-        if (information == null) {
-            return null;
+        try {
+            String information = inventory.lookup(itemID);
+            if (information == null) {
+                return null;
+            }
+            return parse(information);
+        } catch (ItemNotFoundException infe) {
+            throw new InvalidParameterException(infe.getMessage());
+        } catch (Exception e) {
+            throw e;
         }
-
-        return parse(information);
     }
 
     /**
@@ -102,19 +113,16 @@ public class Integration {
 
     private ItemDTO parse(String itemInfo)
     {
+        String[] attributes = itemInfo.split(",");
         int id = -1;
-        String name = null;
+        String name = "";
         double cost = -1;
         double vat = -1;
-        String description = null;
-        String attributeSeperator = ",";
-        String valueSeperator = ":";
-        String[] strings = itemInfo.split(attributeSeperator);
-        for (String string : strings) {
-            String[] split = string.split(valueSeperator);
-            String attribute = split[0];
-            String value = split[1];
-            switch (attribute) {
+        String description = "";
+        for (String string : attributes) {
+            String variable = string.split(":")[0];
+            String value = string.split(":")[1];
+            switch (variable) {
                 case "id":
                     id = Integer.parseInt(value);
                     break;
@@ -132,6 +140,6 @@ public class Integration {
                     break;
             }
         }
-        return new ItemDTO(id, name, cost, vat, description);
+        return new ItemDTO.ItemDTOBuilder(id).setName(name).setCost(cost).setVat(vat).setDescription(description).build();
     }
 }

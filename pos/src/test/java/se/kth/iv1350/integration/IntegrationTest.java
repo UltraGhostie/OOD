@@ -1,12 +1,13 @@
 package se.kth.iv1350.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
+import java.security.InvalidParameterException;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import se.kth.iv1350.dto.DiscountDTO;
@@ -18,22 +19,22 @@ import se.kth.iv1350.model.Item;
  * Unit tests for Integration.
  */
 public class IntegrationTest {
-    Integration integration;
+    static Integration integration;
 
     /**
      * Initializes temporary variables.
      */
-    @Before 
-    public void init()
+    @BeforeClass
+    public static void init()
     {
-        integration = new Integration();
+        integration = Integration.getInstance();
     }
 
     /**
      * Clears up temporary variables.
      */
-    @After
-    public void cleanup()
+    @AfterClass
+    public static void cleanup()
     {
         integration = null;
     }
@@ -51,24 +52,33 @@ public class IntegrationTest {
         String expectedDescription = "bar";
         double acceptableDelta = 0.1;
 
-        ItemDTO item = integration.lookup(validID);
-        assertEquals(validID, item.itemID);
-        assertEquals(expectedName, item.name);
-        assertEquals(expectedCost, item.cost, acceptableDelta);
-        assertEquals(expectedVat, item.vat, acceptableDelta);
-        assertEquals(expectedDescription, item.description);
+        try {
+            ItemDTO item = integration.lookup(validID);
+            assertEquals(validID, item.itemID);
+            assertEquals(expectedName, item.name);
+            assertEquals(expectedCost, item.cost, acceptableDelta);
+            assertEquals(expectedVat, item.vat, acceptableDelta);
+            assertEquals(expectedDescription, item.description);
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     /**
-     * Checks that null is returned when no item is found.
+     * Checks that error is thrown when no item is found.
      */
     @Test
     public void lookupInvalidIDTest()
     {
         int invalidID = -1234;
-
-        ItemDTO item = integration.lookup(invalidID);
-        assertNull(item);
+        try {
+            ItemDTO item = integration.lookup(invalidID);
+            fail();
+        } catch (InvalidParameterException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            fail();
+        }
     }
 
     /**
@@ -102,7 +112,7 @@ public class IntegrationTest {
     @Test
     public void recordSaleTest()
     {
-        SaleDTO saleDTO = new SaleDTO(0);
+        SaleDTO saleDTO = new SaleDTO.SaleDTOBuilder(0).build();
         integration.recordSale(saleDTO);
     }
 
@@ -112,7 +122,7 @@ public class IntegrationTest {
     @Test
     public void removeInventoryTest()
     {
-        SaleDTO saleDTO = new SaleDTO(0);
+        SaleDTO saleDTO = new SaleDTO.SaleDTOBuilder(0).build();
         integration.removeInventory(saleDTO);
     }
 

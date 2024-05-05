@@ -1,7 +1,8 @@
 package se.kth.iv1350.startup;
 
 import se.kth.iv1350.controller.Controller;
-import se.kth.iv1350.integration.Integration;
+import se.kth.iv1350.view.TotalRevenueFileOutput;
+import se.kth.iv1350.view.TotalRevenueView;
 import se.kth.iv1350.view.View;
 
 /**
@@ -14,8 +15,9 @@ public class Main {
      * @param args Arguments are ignored.
      */
     public static void main(String[] args) {
-        Integration integration = new Integration();
-        Controller controller = new Controller(integration);
+        Controller controller = Controller.getInstance();
+        TotalRevenueFileOutput.getInstance().subscribeTo(controller);
+        TotalRevenueView.getInstance().subscribeTo(controller);
         View view = new View(controller);
     }
 }

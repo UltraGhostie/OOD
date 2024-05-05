@@ -15,15 +15,21 @@ import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
-import se.kth.iv1350.integration.Integration;
+import se.kth.iv1350.view.Observer;
 
 /**
  * Unit tests for Sale.
  */
-public class SaleTest {
+public class SaleTest implements Observer{
     Sale sale;
     Item item;
-    ItemDTO itemDTO;
+    SaleDTO saleInfo;
+
+    @Override
+    public void stateChange(SaleDTO saleInfo)
+    {
+        this.saleInfo = saleInfo;
+    }
 
     /**
      * Creates new objects for sale and item.
@@ -37,8 +43,9 @@ public class SaleTest {
         double vat = 0.06;
         String description = "test";
         sale = new Sale();
-        itemDTO = new ItemDTO(itemId, name, cost, vat, description);
+        ItemDTO itemDTO = new ItemDTO.ItemDTOBuilder(itemId).setCost(cost).setDescription(description).setName(name).setVat(vat).build();
         item = new Item(itemDTO);
+        Controller.getInstance().subscribeOnUpdate(this);
     }
 
     /**
@@ -49,8 +56,19 @@ public class SaleTest {
     {
         sale = null;
         item = null;
+        saleInfo = null;
     }
 
+    /**
+     * Checks that the contains() function returns false correctly.
+     */
+    @Test
+    public void containsFalseTest()
+    {
+        int badId = -124;
+        sale.add(item);
+        assertFalse(sale.contains(badId));
+    }
 
     /**
      * Checks that the add() function and contains() function are consistent
@@ -88,11 +106,30 @@ public class SaleTest {
     @Test
     public void setBadCountTest()
     {
+        int goodCount = 5;
+        int badID = -1;
+        String success = "Managed to set value on item that should not exist.";
+        sale.add(item);
+        try {
+            sale.setCount(badID, goodCount);
+            fail(success);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Checks that the setCount function does not work on items that do not exist.
+     */
+    @Test
+    public void setBadItemTest()
+    {
         int badCount = -5;
-        sale.add(itemDTO);
+        String success = "Managed to set item to illegal value.";
+        sale.add(item);
         try {
             sale.setCount(item.itemID, badCount);
-            fail("Set count to invalid state.");
+            fail(success);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -144,10 +181,8 @@ public class SaleTest {
         int itemCount = 60;
         double expectedDiscount = flatDiscount + (totalDiscount*itemCount) + (customerDiscount*itemCount);
         DiscountDTO discountInfo = new DiscountDTO(customerDiscount, totalDiscount, flatDiscount);
-        Controller controller = new Controller(new Integration());
+        Controller controller = Controller.getInstance();
         controller.startSale();
-        SaleDTO itemContainer = controller.scanItem(knownItemID);
-        ItemDTO item = itemContainer.items.get(0);
         sale.add(item);
         sale.setCount(knownItemID, itemCount);
         sale.applyDiscount(discountInfo);

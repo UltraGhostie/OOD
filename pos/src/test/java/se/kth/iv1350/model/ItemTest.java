@@ -33,7 +33,7 @@ public class ItemTest {
         cost = 1;
         vat = 0.06;
         description = "description";
-        itemDTO = new ItemDTO(itemID, name, cost, vat, description);
+        itemDTO = new ItemDTO.ItemDTOBuilder(itemID).setCost(cost).setDescription(description).setName(name).setVat(vat).build();
     }
 
     /** 

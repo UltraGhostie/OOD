@@ -2,24 +2,32 @@ package se.kth.iv1350.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.integration.Integration;
+import se.kth.iv1350.model.Item;
+import se.kth.iv1350.view.Observer;
 
 /**
  * Unit tests for Controller.
  */
-public class ControllerTest {
-    static Integration integration;
-    static Controller controller;
+public class ControllerTest implements Observer{
+    static Integration integration = Integration.getInstance();
+    static Controller controller = Controller.getInstance();
+    SaleDTO saleInfo;
+
+    public void stateChange(SaleDTO saleInfo)
+    {
+        this.saleInfo = saleInfo;
+    }
 
     /**
      * Initializes new temporary variables.
@@ -27,9 +35,9 @@ public class ControllerTest {
     @Before
     public void init()
     {
-        integration = new Integration();
-        controller = new Controller(integration);
         controller.startSale();
+        controller.subscribeOnUpdate(this);
+        saleInfo = null;
     }
 
     /**
@@ -38,8 +46,14 @@ public class ControllerTest {
     @After
     public void cleanup()
     {
-        integration = null;
+        saleInfo = null;
+    }
+
+    @AfterClass
+    public static void cleanerup()
+    {
         controller = null;
+        integration = null;
     }
 
     /**
@@ -49,14 +63,19 @@ public class ControllerTest {
     public void startSaleTest()
     {
         int validItemID = 1;
-        SaleDTO saleData = controller.startSale();
-        assertNotNull(saleData);
-        controller.scanItem(validItemID);
-        saleData = controller.startSale();
-        for (ItemDTO item : saleData.items) {
-            fail("Sale not created empty.");
-        }
+        String failMessage = "Sale not reset correctly.";
+        controller.startSale();
+        assertNotNull(saleInfo);
+        try {
+            controller.scanItem(validItemID);
+            controller.startSale();
+            for (Item item : saleInfo.items) {
+                fail(failMessage);
+            }
         assertTrue(true);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
     }
 
     /**
@@ -66,25 +85,106 @@ public class ControllerTest {
     public void scanValidItemTest()
     {
         int validItemID = 1;
-        SaleDTO saleInfo = controller.scanItem(validItemID);
-        assertNotNull(saleInfo);
-        for (ItemDTO item : saleInfo.items) {
-            if (item.itemID == validItemID) {
-                return;
+        String failMessage = "No item with id " + validItemID + " found";
+        try {
+            controller.scanItem(validItemID);
+            assertNotNull(saleInfo);
+            for (Item item : saleInfo.items) {
+                if (item.itemID == validItemID) {
+                    assertTrue(true);
+                    return;
+                }
             }
+            fail(failMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail(e.toString());
         }
-        fail("No item with id " + validItemID + " found");
     }
 
     /**
-     * Checks that scanning an invalid item returns null.
+     * Checks that scanning an invalid item throws an error.
      */
     @Test
     public void scanInvalidItemTest()
     {
         int invalidItemID = -1234;
-        SaleDTO shouldBeNull = controller.scanItem(invalidItemID);
-        assertNull(shouldBeNull);
+        try {
+            controller.scanItem(invalidItemID);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Checks that setCount works as intended.
+     */
+    @Test
+    public void setCountTest()
+    {
+        int validItemID = 1;
+        int validCount = 5;
+        String wrongCount = "Item count not equal to validCount (" + validCount +")";
+        controller.subscribeOnUpdate(this);
+        try {
+            controller.scanItem(1);
+            controller.setCount(validItemID, validCount);
+            for (Item item : saleInfo.items) {
+                if (item.count() != 5) {
+                    fail(wrongCount);
+                }
+            }
+            assertTrue(true);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    /**
+     * Checks that setCount throws exception correctly when an invalid count is entered.
+     */
+    @Test
+    public void setInvalidCountTest()
+    {
+        int invalidItemCount = 0;
+        int validItemID = 1;
+        String success = "Managed to set item count to illegal value";
+        controller.subscribeOnUpdate(this);
+        try {
+            try {
+                controller.scanItem(validItemID);
+            } catch (Exception e) {
+                fail(e.toString());
+            }
+            controller.setCount(validItemID, invalidItemCount);
+            fail(success);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
+     * Checks that setCount throws exception correctly when an invalid item is entered.
+     */
+    @Test
+    public void setCountInvalidItemTest()
+    {
+        int validCount = 5;
+        int invalidItemID = -1;
+        String success = "Managed to set an invalid items count";
+        controller.subscribeOnUpdate(this);
+        try {
+            try {
+                controller.scanItem(1);
+            } catch (Exception e) {
+                fail(e.toString());
+            }
+            controller.setCount(invalidItemID, validCount);
+            fail(success);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 
     /**
@@ -100,14 +200,21 @@ public class ControllerTest {
         double itemVat = 1.06;
         double acceptableDelta = 0.1;
         double expectedChange = amount - (itemCost*itemCount*itemVat);
-        controller.scanItem(knownItemID);
-        controller.setCount(knownItemID, itemCount);
-        assertEquals(expectedChange, controller.enterPayment(amount), acceptableDelta);
+        String saleNotNull = "Sale not emptied.";
         try {
-            SaleDTO saleInfo = controller.scanItem(knownItemID);
-            assertNull(saleInfo);
+            controller.scanItem(knownItemID);
+            controller.setCount(knownItemID, itemCount);
+            controller.enterPayment(amount);
+            double change = saleInfo.change;
+            assertEquals(expectedChange, change, acceptableDelta);
+            try {
+                controller.scanItem(knownItemID);
+                fail(saleNotNull);
+            } catch (Exception e) {
+                assertTrue(true);
+            }
         } catch (Exception e) {
-            assertTrue(true);
+            fail(e.toString());
         }
     }
 
@@ -119,10 +226,15 @@ public class ControllerTest {
     {
         double amount = 0;
         int knownItemID = 1;
-        controller.scanItem(knownItemID);
+        String failMessage = "Bad payment accepted.";
         try {
+            try {
+                controller.scanItem(knownItemID);
+            } catch (Exception e) {
+                fail(e.toString());
+            }
             controller.enterPayment(amount);
-            fail("Entered invalid payment without exception.");
+            fail(failMessage);
         } catch (Exception e) {
             assertTrue(true);
         }

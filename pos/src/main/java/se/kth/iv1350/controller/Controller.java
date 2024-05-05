@@ -1,7 +1,13 @@
 package se.kth.iv1350.controller;
 
-import se.kth.iv1350.model.Sale;
-import se.kth.iv1350.dto.SaleDTO;
+import se.kth.iv1350.model.*;
+import se.kth.iv1350.view.Observer;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
+
+import se.kth.iv1350.dto.*;
 import se.kth.iv1350.integration.Integration;
 
 /**
@@ -9,87 +15,134 @@ import se.kth.iv1350.integration.Integration;
  */
 public class Controller {
     private Integration integration;
+    static Controller INSTANCE = new Controller();
     private Sale currentSale;
+    private ArrayList<Observer> onPaymentSubscribers = new ArrayList<>();
+    private ArrayList<Observer> onUpdateSubscribers = new ArrayList<>();
 
     /**
      * Initializes a new object of the controller type.
      * @param integration The integration used to communicate with external systems.
      */
-    public Controller(Integration integration)
+    private Controller()
     {
-        this.integration = integration;
+        this.integration = Integration.getInstance();
     }
 
+    public static Controller getInstance()
+    {
+        return INSTANCE;
+    }
     /**
      * Creates a new sale.
      * @return A new empty SaleDTO object.
      */
-    public SaleDTO startSale()
+    public void startSale()
     {
         Sale newSale = new Sale();
         this.currentSale = newSale;
-        return newSale.dto();
+        updateOnUpdate();
     }
 
     /**
      * Adds an item with the itemID if it is found. If the itemID is invalid returns null.
      * @param itemID The unique id of the item to find.
      * @return A new SaleDTO containing information about the updated sale or null if item is not found.
+     * @throws TimeoutException If server is unable to be reached.
+     * @throws InvalidParameterException If an invalid id is entered or there is no item with id itemID.
      */
-    public SaleDTO scanItem(int itemID)
+    public void scanItem(int itemID) throws TimeoutException, InvalidParameterException
     {
-        try {
-            currentSale.add(integration.lookup(itemID));
-            return currentSale.dto();
+        if (currentSale.contains(itemID)) {
+            currentSale.increment(itemID);
+            return;
+        }
+        try {  
+            ItemDTO itemInfo = integration.lookup(itemID);
+            Item item = new Item(itemInfo);
+            currentSale.add(item);
+            updateOnUpdate();
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 
     /**
      * Attempts to set the count of the item with the id itemID to the non-zero, non-negative itemCount.
-     * Returns null if unsuccessfull.
      * @param itemID The id of the item to be changed.
      * @param itemCount The new count of the item.
+     * @throws InvalidParameterException If count is below 1 or an item with the given id is not in sale.
      */
-    public SaleDTO setCount(int itemID, int itemCount)
+    public void setCount(int itemID, int itemCount) throws InvalidParameterException
     {
         try {
             currentSale.setCount(itemID, itemCount);
-            return currentSale.dto();
+            updateOnUpdate();
         } catch (Exception e) {
-            return null;
+            throw e;
         }
     }
 
     /**
      * Send a request to the discount system to retrieve discount data about the current sale.
      * @param customerID The id of the customer.
-     * @return A new instance of SaleDTO containing previous data as well as discount data.
      */
-    public SaleDTO discountRequest(int customerID)
+    public void discountRequest(int customerID)
     {
         currentSale.applyDiscount(integration.discountRequest(currentSale.dto()));
-        return currentSale.dto();
+        updateOnUpdate();
     }
 
     /**
-     * Completes the sale and returns the amount of change to be given.
+     * Completes the sale by adding payment and change to sale.
      * @param amount The payment given by the customer.
-     * @return The change to be given to the customer.
      */
-    public double enterPayment(double amount)
+    public void enterPayment(double amount)
     {
-        try {
-            double change = currentSale.setPayment(amount);
-            SaleDTO saleInfo = currentSale.dto();
-            integration.removeInventory(saleInfo);
-            integration.recordSale(saleInfo);
-            integration.updateRegister(amount);
-            currentSale = null;
-            return change;
-        } catch (Exception e) {
-            throw e;
+        SaleDTO saleInfo = currentSale.dto();
+        String badPaymentMessage = "Payment amount is lower than cost.";
+        double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
+        if (amount - cost < 0) {
+            throw new InvalidParameterException(badPaymentMessage);
+        }
+        currentSale.setPayment(amount);
+        saleInfo = currentSale.dto();
+        integration.removeInventory(saleInfo);
+        integration.recordSale(saleInfo);
+        integration.updateRegister(amount);
+        updateOnPayment();
+        updateOnUpdate();
+        currentSale = null;
+        return;
+    }
+
+    /**
+     * @param observer Adds observer as a subscriber to the event OnPayment.
+     */
+    public void subscribeOnPayment(Observer observer)
+    {
+        this.onPaymentSubscribers.add(observer);
+    }
+
+    /**
+     * @param observer Adds observer as a subscriber to the event OnUpdate.
+     */
+    public void subscribeOnUpdate(Observer observer)
+    {
+        this.onUpdateSubscribers.add(observer);
+    }
+
+    private void updateOnUpdate()
+    {
+        for (Observer observer : onUpdateSubscribers) {
+            observer.stateChange(currentSale.dto());
+        }
+    }
+
+    private void updateOnPayment()
+    {
+        for (Observer observer : onPaymentSubscribers) {
+            observer.stateChange(currentSale.dto());
         }
     }
 }
