@@ -13,7 +13,6 @@ import org.junit.Test;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.integration.Integration;
-import se.kth.iv1350.model.Item;
 import se.kth.iv1350.view.Observer;
 
 /**
@@ -69,7 +68,7 @@ public class ControllerTest implements Observer{
         try {
             controller.scanItem(validItemID);
             controller.startSale();
-            for (Item item : saleInfo.items) {
+            for (ItemDTO item : saleInfo.items) {
                 fail(failMessage);
             }
         assertTrue(true);
@@ -89,7 +88,7 @@ public class ControllerTest implements Observer{
         try {
             controller.scanItem(validItemID);
             assertNotNull(saleInfo);
-            for (Item item : saleInfo.items) {
+            for (ItemDTO item : saleInfo.items) {
                 if (item.itemID == validItemID) {
                     assertTrue(true);
                     return;
@@ -130,8 +129,8 @@ public class ControllerTest implements Observer{
         try {
             controller.scanItem(1);
             controller.setCount(validItemID, validCount);
-            for (Item item : saleInfo.items) {
-                if (item.count() != 5) {
+            for (ItemDTO item : saleInfo.items) {
+                if (item.count != 5) {
                     fail(wrongCount);
                 }
             }

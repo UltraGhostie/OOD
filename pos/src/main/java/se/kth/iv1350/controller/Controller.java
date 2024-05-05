@@ -53,14 +53,8 @@ public class Controller {
      */
     public void scanItem(int itemID) throws TimeoutException, InvalidParameterException
     {
-        if (currentSale.contains(itemID)) {
-            currentSale.increment(itemID);
-            return;
-        }
-        try {  
-            ItemDTO itemInfo = integration.lookup(itemID);
-            Item item = new Item(itemInfo);
-            currentSale.add(item);
+        try {
+            currentSale.add(integration.lookup(itemID));
             updateOnUpdate();
         } catch (Exception e) {
             throw e;
@@ -96,17 +90,12 @@ public class Controller {
     /**
      * Completes the sale by adding payment and change to sale.
      * @param amount The payment given by the customer.
+     * @throws InvalidParameterException If the payment is lower than the cost.
      */
-    public void enterPayment(double amount)
+    public void enterPayment(double amount) throws InvalidParameterException
     {
-        SaleDTO saleInfo = currentSale.dto();
-        String badPaymentMessage = "Payment amount is lower than cost.";
-        double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
-        if (amount - cost < 0) {
-            throw new InvalidParameterException(badPaymentMessage);
-        }
         currentSale.setPayment(amount);
-        saleInfo = currentSale.dto();
+        SaleDTO saleInfo = currentSale.dto();
         integration.removeInventory(saleInfo);
         integration.recordSale(saleInfo);
         integration.updateRegister(amount);

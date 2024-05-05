@@ -1,16 +1,12 @@
 package se.kth.iv1350.view;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.fail;
 
 import se.kth.iv1350.controller.Controller;
-import se.kth.iv1350.integration.Integration;
 
 /**
  * Unit test for View.

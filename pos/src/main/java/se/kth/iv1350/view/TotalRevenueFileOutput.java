@@ -11,7 +11,6 @@ public class TotalRevenueFileOutput implements Observer {
     private static TotalRevenueFileOutput INSTANCE = new TotalRevenueFileOutput();
     private File file = new File("TotalRev.txt");
     private PrintStream out;
-    private Scanner scanner;
     double totalIncome;
 
     private class InitializationException extends RuntimeException {

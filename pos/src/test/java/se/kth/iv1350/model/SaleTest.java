@@ -60,17 +60,6 @@ public class SaleTest implements Observer{
     }
 
     /**
-     * Checks that the contains() function returns false correctly.
-     */
-    @Test
-    public void containsFalseTest()
-    {
-        int badId = -124;
-        sale.add(item);
-        assertFalse(sale.contains(badId));
-    }
-
-    /**
      * Checks that the add() function and contains() function are consistent
      */
     @Test

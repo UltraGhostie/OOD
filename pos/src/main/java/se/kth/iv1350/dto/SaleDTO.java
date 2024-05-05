@@ -2,6 +2,7 @@ package se.kth.iv1350.dto;
 
 import se.kth.iv1350.model.Item;
 import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public class SaleDTO {
     public final Integer customerID;
     public final double totalDiscount;
     public final double totalCostBeforeDiscount;
-    public final List<Item> items;
+    public final List<ItemDTO> items;
     public final double payment;
     public final double change;
 
@@ -62,8 +63,8 @@ public class SaleDTO {
         
         if (items.size() > 0) {
             string += "\nItems: ";
-            for (Item item : items) {
-                string += "\n" + item.name + "*" + item.count() + ", " + item.cost + "*" + item.count() + ", vat: " + ((double)Math.round(item.cost*item.count()*item.vat*100))/100 + " (" + (item.vat*100) + "%)";
+            for (ItemDTO item : items) {
+                string += "\n" + item.name + "*" + item.count + ", " + item.cost + "*" + item.count + ", vat: " + ((double)Math.round(item.cost*item.count*item.vat*100))/100 + " (" + (item.vat*100) + "%)";
             }
         }
         

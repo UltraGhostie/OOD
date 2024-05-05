@@ -1,6 +1,7 @@
 package se.kth.iv1350.integration;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 import se.kth.iv1350.accounting.Accounting;
@@ -46,9 +47,6 @@ public class Integration {
     {
         try {
             String information = inventory.lookup(itemID);
-            if (information == null) {
-                return null;
-            }
             return parse(information);
         } catch (ItemNotFoundException infe) {
             throw new InvalidParameterException(infe.getMessage());

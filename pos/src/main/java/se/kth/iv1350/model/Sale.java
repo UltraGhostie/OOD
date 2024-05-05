@@ -8,12 +8,11 @@ import java.util.Random;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
-import se.kth.iv1350.view.Observer;
 
 /**
  * Contains information about the an ongoing sale.
  */
-public class Sale implements Observer{
+public class Sale {
     private int id;
     private ArrayList<Item> items;
     private double totalDiscount;
@@ -60,18 +59,16 @@ public class Sale implements Observer{
      * @param itemInfo The item to add to the sale.
      */
     public void add(ItemDTO itemInfo)
-    {
-        if (itemInfo == null) {
-            throw new InvalidParameterException();
-        }
-        for (Item currentItem : items) {
-            if (currentItem.itemID == itemInfo.itemID) {
-                currentItem.increment();
+    {        
+        Item newItem = new Item(itemInfo);
+
+        for (Item item : items) {
+            if (item.itemID == newItem.itemID) {
+                item.increment();
                 return;
             }
         }
-        Item item = new Item(itemInfo);
-        items.add(item);
+        items.add(newItem);
     }
 
     /**
@@ -109,34 +106,21 @@ public class Sale implements Observer{
         totalDiscount += discountInfo.customerDiscount * totalCost();
         totalDiscount += discountInfo.totalDiscount * totalCost();
     }
-    
-    /**
-     * @param payment Sets payment to given value.
-     */
-    public void setPayment(double payment)
-    {
-        this.payment = payment;
-    }
-
-    @Override
-    public void stateChange(SaleDTO saleInfo)
-    {
-        //Stuff
-    }
 
     /**
      * Set payment.
      * @param amount The payment amount
      * @return The amount of change
      */
-    public double setPayment(double amount)
+    public void setPayment(double amount) throws InvalidParameterException
     {
         SaleDTO saleInfo = dto();
         double cost = saleInfo.totalCostBeforeDiscount - saleInfo.totalDiscount;
-        if (amount - cost < 0) {
+        double change = amount - cost;
+        if (change < 0) {
             throw new InvalidParameterException("Payment requirements not met.");
         }
-        return amount - cost;
+        this.payment = amount;
     }
 
     private int totalCost()

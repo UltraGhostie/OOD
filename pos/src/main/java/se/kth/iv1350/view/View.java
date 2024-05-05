@@ -1,7 +1,6 @@
 package se.kth.iv1350.view;
 
 import se.kth.iv1350.controller.Controller;
-import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 
 /**
@@ -10,7 +9,6 @@ import se.kth.iv1350.dto.SaleDTO;
 public class View implements Observer{
     private Controller controller;
     private SaleDTO saleInfo;
-    private double change;
     private double payment;
 
     /**

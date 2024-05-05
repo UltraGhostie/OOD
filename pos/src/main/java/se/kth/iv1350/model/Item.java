@@ -32,9 +32,9 @@ public class Item {
      * Instantiates a new ItemDTO with information from this Item instance.
      * @return A new ItemDTO object.
      */
-    private ItemDTO dto()
+    public ItemDTO dto()
     {
-        return new ItemDTO.ItemDTOBuilder(itemID).setCost(cost).setDescription(description).setName(name).setVat(vat).build();
+        return new ItemDTO.ItemDTOBuilder(itemID).setCost(cost).setDescription(description).setName(name).setVat(vat).setCount(count).build();
     }
 
     /**

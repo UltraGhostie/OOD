@@ -14,14 +14,14 @@ public class ItemDTO {
     /**
      * Instantiates a new object of the ItemDTO type containing the information of an item.
      */
-    ItemDTO(int itemID, String name, double cost, double vat, String description)
+    ItemDTO(int itemID, String name, double cost, double vat, String description, int count)
     {
         this.itemID = itemID;
         this.name = name;
         this.cost = cost;
         this.vat = vat;
         this.description = description;
-        this.count = 1;
+        this.count = count;
     }
 
     /**
@@ -36,6 +36,7 @@ public class ItemDTO {
         double cost = 0;
         double vat = 0;
         String description;
+        int count = 1;
 
         public ItemDTOBuilder(int id)
         {
@@ -66,9 +67,15 @@ public class ItemDTO {
             return this;
         }
 
+        public ItemDTOBuilder setCount(int count)
+        {
+            this.count = count;
+            return this;
+        }
+
         public ItemDTO build()
         {
-            return new ItemDTO(id, name, id, vat, description);
+            return new ItemDTO(id, name, id, vat, description, count);
         }
     }
 }
