@@ -15,12 +15,12 @@ import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
-import se.kth.iv1350.view.Observer;
+import se.kth.iv1350.view.SaleObserver;
 
 /**
  * Unit tests for Sale.
  */
-public class SaleTest implements Observer{
+public class SaleTest implements SaleObserver{
     Sale sale;
     Item item;
     SaleDTO saleInfo;

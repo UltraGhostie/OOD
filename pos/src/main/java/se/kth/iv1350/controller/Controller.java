@@ -1,7 +1,7 @@
 package se.kth.iv1350.controller;
 
 import se.kth.iv1350.model.*;
-import se.kth.iv1350.view.Observer;
+import se.kth.iv1350.view.SaleObserver;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -13,12 +13,12 @@ import se.kth.iv1350.integration.Integration;
 /**
  * The controller executes actions when prompted by a view.
  */
-public class Controller {
+public class Controller implements SaleObservable{
     private Integration integration;
     static Controller INSTANCE = new Controller();
     private Sale currentSale;
-    private ArrayList<Observer> onPaymentSubscribers = new ArrayList<>();
-    private ArrayList<Observer> onUpdateSubscribers = new ArrayList<>();
+    private ArrayList<SaleObserver> onFinishSubscribers = new ArrayList<>();
+    private ArrayList<SaleObserver> onUpdateSubscribers = new ArrayList<>();
 
     /**
      * Initializes a new object of the controller type.
@@ -91,7 +91,7 @@ public class Controller {
         integration.removeInventory(saleInfo);
         integration.recordSale(saleInfo);
         integration.updateRegister(amount);
-        updateOnPayment();
+        updateOnFinish();
         updateOnUpdate();
         currentSale = null;
         return;
@@ -100,29 +100,31 @@ public class Controller {
     /**
      * @param observer Adds observer as a subscriber to the event OnPayment.
      */
-    public void subscribeOnPayment(Observer observer)
+    @Override
+    public void subscribeOnFinish(SaleObserver observer)
     {
-        this.onPaymentSubscribers.add(observer);
+        this.onFinishSubscribers.add(observer);
     }
 
     /**
      * @param observer Adds observer as a subscriber to the event OnUpdate.
      */
-    public void subscribeOnUpdate(Observer observer)
+    @Override
+    public void subscribeOnUpdate(SaleObserver observer)
     {
         this.onUpdateSubscribers.add(observer);
     }
 
     private void updateOnUpdate()
     {
-        for (Observer observer : onUpdateSubscribers) {
+        for (SaleObserver observer : onUpdateSubscribers) {
             observer.stateChange(currentSale.dto());
         }
     }
 
-    private void updateOnPayment()
+    private void updateOnFinish()
     {
-        for (Observer observer : onPaymentSubscribers) {
+        for (SaleObserver observer : onFinishSubscribers) {
             observer.stateChange(currentSale.dto());
         }
     }

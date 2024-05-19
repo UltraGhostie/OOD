@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.PrintStream;
 
 import se.kth.iv1350.controller.Controller;
+import se.kth.iv1350.controller.SaleObservable;
 import se.kth.iv1350.dto.SaleDTO;
 
-public class TotalRevenueFileOutput implements Observer {
+public class TotalRevenueFileOutput implements SaleObserver {
     private static TotalRevenueFileOutput INSTANCE = new TotalRevenueFileOutput();
     private File file = new File("TotalRev.txt");
     private PrintStream out;
@@ -29,9 +30,9 @@ public class TotalRevenueFileOutput implements Observer {
         totalIncome = 0;
     }
 
-    public void subscribeTo(Controller controller)
+    public void subscribeTo(SaleObservable observable)
     {
-        controller.subscribeOnPayment(this);
+        observable.subscribeOnFinish(this);
     }
 
     @Override

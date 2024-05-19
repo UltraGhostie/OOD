@@ -1,9 +1,10 @@
 package se.kth.iv1350.view;
 
 import se.kth.iv1350.controller.Controller;
+import se.kth.iv1350.controller.SaleObservable;
 import se.kth.iv1350.dto.SaleDTO;
 
-public class TotalRevenueView implements Observer {
+public class TotalRevenueView implements SaleObserver {
     private double totalRevenue = 0;
 
     private static TotalRevenueView INSTANCE = new TotalRevenueView();
@@ -17,9 +18,9 @@ public class TotalRevenueView implements Observer {
         System.out.println("Total revenue: " + totalRevenue + "\n");
     }
 
-    public void subscribeTo(Controller controller)
+    public void subscribeTo(SaleObservable observable)
     {
-        controller.subscribeOnPayment(this);
+        observable.subscribeOnFinish(this);
     }
 
     public static TotalRevenueView getInstance()

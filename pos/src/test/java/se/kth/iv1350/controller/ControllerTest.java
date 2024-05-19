@@ -13,12 +13,12 @@ import org.junit.Test;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 import se.kth.iv1350.integration.Integration;
-import se.kth.iv1350.view.Observer;
+import se.kth.iv1350.view.SaleObserver;
 
 /**
  * Unit tests for Controller.
  */
-public class ControllerTest implements Observer{
+public class ControllerTest implements SaleObserver{
     static Integration integration = Integration.getInstance();
     static Controller controller = Controller.getInstance();
     SaleDTO saleInfo;

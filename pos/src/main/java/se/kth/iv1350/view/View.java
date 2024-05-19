@@ -6,7 +6,7 @@ import se.kth.iv1350.dto.SaleDTO;
 /**
  * Handles data input and output between the user and the controller.
  */
-public class View implements Observer{
+public class View implements SaleObserver{
     private Controller controller;
     private SaleDTO saleInfo;
     private double payment;
