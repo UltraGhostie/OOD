@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 
 import se.kth.iv1350.controller.Controller;
-import se.kth.iv1350.controller.SaleObservable;
+import se.kth.iv1350.controller.Observable;
 import se.kth.iv1350.dto.SaleDTO;
 
 public class TotalRevenueFileOutput implements SaleObserver {
@@ -30,7 +30,7 @@ public class TotalRevenueFileOutput implements SaleObserver {
         totalIncome = 0;
     }
 
-    public void subscribeTo(SaleObservable observable)
+    public void subscribeTo(Observable observable)
     {
         observable.subscribeOnFinish(this);
     }

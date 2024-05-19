@@ -13,7 +13,7 @@ import se.kth.iv1350.integration.Integration;
 /**
  * The controller executes actions when prompted by a view.
  */
-public class Controller implements SaleObservable{
+public class Controller implements Observable{
     private Integration integration;
     static Controller INSTANCE = new Controller();
     private Sale currentSale;
