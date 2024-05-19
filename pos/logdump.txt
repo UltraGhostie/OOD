@@ -1,7 +1,7 @@
-java.security.InvalidParameterException: Illegal value for parameter itemCount.
+java.security.InvalidParameterException: Illegal value for parameter itemCount (tried to set item to 0).
 	at se.kth.iv1350.model.Sale.setCount(Sale.java:86)
-	at se.kth.iv1350.controller.Controller.setCount(Controller.java:73)
-	at se.kth.iv1350.view.View.testCase(View.java:52)
+	at se.kth.iv1350.controller.Controller.setCount(Controller.java:68)
+	at se.kth.iv1350.view.View.testCase(View.java:56)
 	at se.kth.iv1350.view.View.<init>(View.java:26)
 	at se.kth.iv1350.startup.Main.main(Main.java:21)
 	at se.kth.iv1350.startup.MainTest.shouldAnswerWithTrue(MainTest.java:21)
@@ -33,9 +33,8 @@ java.security.InvalidParameterException: Illegal value for parameter itemCount.
 java.util.concurrent.TimeoutException: Server could not be reached.
 	at se.kth.iv1350.inventory.Inventory.lookup(Inventory.java:51)
 	at se.kth.iv1350.integration.Integration.lookup(Integration.java:49)
-	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:57)
-	at se.kth.iv1350.view.View.scanItem(View.java:70)
-	at se.kth.iv1350.view.View.testCase(View.java:56)
+	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:56)
+	at se.kth.iv1350.view.View.testCase(View.java:61)
 	at se.kth.iv1350.view.View.<init>(View.java:26)
 	at se.kth.iv1350.startup.Main.main(Main.java:21)
 	at se.kth.iv1350.startup.MainTest.shouldAnswerWithTrue(MainTest.java:21)
@@ -66,9 +65,8 @@ java.util.concurrent.TimeoutException: Server could not be reached.
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:418)
 java.security.InvalidParameterException: No item with id: 0 found.
 	at se.kth.iv1350.integration.Integration.lookup(Integration.java:52)
-	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:57)
-	at se.kth.iv1350.view.View.scanItem(View.java:70)
-	at se.kth.iv1350.view.View.testCase(View.java:58)
+	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:56)
+	at se.kth.iv1350.view.View.testCase(View.java:66)
 	at se.kth.iv1350.view.View.<init>(View.java:26)
 	at se.kth.iv1350.startup.Main.main(Main.java:21)
 	at se.kth.iv1350.startup.MainTest.shouldAnswerWithTrue(MainTest.java:21)
@@ -97,10 +95,10 @@ java.security.InvalidParameterException: No item with id: 0 found.
 	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:345)
 	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:126)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:418)
-java.security.InvalidParameterException: Illegal value for parameter itemCount.
+java.security.InvalidParameterException: Illegal value for parameter itemCount (tried to set item to 0).
 	at se.kth.iv1350.model.Sale.setCount(Sale.java:86)
-	at se.kth.iv1350.controller.Controller.setCount(Controller.java:73)
-	at se.kth.iv1350.view.View.testCase(View.java:52)
+	at se.kth.iv1350.controller.Controller.setCount(Controller.java:68)
+	at se.kth.iv1350.view.View.testCase(View.java:56)
 	at se.kth.iv1350.view.View.<init>(View.java:27)
 	at se.kth.iv1350.startup.Main.main(Main.java:21)
 	at se.kth.iv1350.startup.MainTest.shouldAnswerWithTrue(MainTest.java:21)
@@ -132,9 +130,8 @@ java.security.InvalidParameterException: Illegal value for parameter itemCount.
 java.util.concurrent.TimeoutException: Server could not be reached.
 	at se.kth.iv1350.inventory.Inventory.lookup(Inventory.java:51)
 	at se.kth.iv1350.integration.Integration.lookup(Integration.java:49)
-	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:57)
-	at se.kth.iv1350.view.View.scanItem(View.java:70)
-	at se.kth.iv1350.view.View.testCase(View.java:56)
+	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:56)
+	at se.kth.iv1350.view.View.testCase(View.java:61)
 	at se.kth.iv1350.view.View.<init>(View.java:27)
 	at se.kth.iv1350.startup.Main.main(Main.java:21)
 	at se.kth.iv1350.startup.MainTest.shouldAnswerWithTrue(MainTest.java:21)
@@ -165,9 +162,8 @@ java.util.concurrent.TimeoutException: Server could not be reached.
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:418)
 java.security.InvalidParameterException: No item with id: 0 found.
 	at se.kth.iv1350.integration.Integration.lookup(Integration.java:52)
-	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:57)
-	at se.kth.iv1350.view.View.scanItem(View.java:70)
-	at se.kth.iv1350.view.View.testCase(View.java:58)
+	at se.kth.iv1350.controller.Controller.scanItem(Controller.java:56)
+	at se.kth.iv1350.view.View.testCase(View.java:66)
 	at se.kth.iv1350.view.View.<init>(View.java:27)
 	at se.kth.iv1350.startup.Main.main(Main.java:21)
 	at se.kth.iv1350.startup.MainTest.shouldAnswerWithTrue(MainTest.java:21)

@@ -45,17 +45,25 @@ public class View implements Observer{
         
         payment = 0;
         controller.startSale();
-        scanItem(validItem);
-        scanItem(validItem);
-        controller.setCount(validItem, count);
+        try {
+            controller.scanItem(validItem);
+            controller.scanItem(validItem);
+            controller.setCount(validItem, count);
+        } catch (Exception e) {
+            log(e);
+        }
         try {
             controller.setCount(validItem, invalidCount);
         } catch (Exception e) {
             log(e);
         }
-        scanItem(noServer);
         try {
-            scanItem(invalidItem);
+            controller.scanItem(noServer);
+        } catch (Exception e) {
+            log(e);
+        }
+        try {
+            controller.scanItem(invalidItem);
         } catch (Exception e) {
             log(e);
         }
@@ -63,17 +71,6 @@ public class View implements Observer{
         payment = 20;
         controller.enterPayment(payment);
     }
-
-    private void scanItem(int itemID)
-    {
-        try {
-            controller.scanItem(itemID);
-        } catch (Exception e) {
-            out(e.getMessage());
-            log(e);
-        }
-    }
-
 
     private void outputSale()
     {
@@ -89,6 +86,7 @@ public class View implements Observer{
 
     private void log(Exception e)
     {
+        out("An error has occured and has been logged: " + e.getMessage());
         Logger.getInstance().log(e);
     }
 }

@@ -16,7 +16,7 @@ public class Logger {
         }
     }
 
-    private Logger() {
+    private Logger() throws LoggerInitializationException {
         try {
             setPath(defaultPath);
         } catch (Exception e) {

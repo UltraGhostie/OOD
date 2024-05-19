@@ -12,19 +12,19 @@ public class TotalRevenueFileOutput implements Observer {
     private PrintStream out;
     double totalIncome;
 
-    private class InitializationException extends RuntimeException {
-        InitializationException(String message)
+    private class RevenueFileOutputInitializationException extends RuntimeException {
+        RevenueFileOutputInitializationException(String message)
         {
             super(message);
         }
     }
 
-    private TotalRevenueFileOutput()
+    private TotalRevenueFileOutput() throws RevenueFileOutputInitializationException
     {
         try {
             out = new PrintStream(file);
         } catch (Exception e) {
-            throw new InitializationException("Unable to initialize TotalRevenueFileOutput");
+            throw new RevenueFileOutputInitializationException("Unable to initialize TotalRevenueFileOutput");
         }
         totalIncome = 0;
     }

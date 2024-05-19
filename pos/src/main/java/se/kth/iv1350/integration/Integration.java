@@ -50,8 +50,6 @@ public class Integration {
             return parse(information);
         } catch (ItemNotFoundException infe) {
             throw new InvalidParameterException(infe.getMessage());
-        } catch (Exception e) {
-            throw e;
         }
     }
 

@@ -53,12 +53,8 @@ public class Controller {
      */
     public void scanItem(int itemID) throws TimeoutException, InvalidParameterException
     {
-        try {
-            currentSale.add(integration.lookup(itemID));
-            updateOnUpdate();
-        } catch (Exception e) {
-            throw e;
-        }
+        currentSale.add(integration.lookup(itemID));
+        updateOnUpdate();
     }
 
     /**
@@ -69,12 +65,8 @@ public class Controller {
      */
     public void setCount(int itemID, int itemCount) throws InvalidParameterException
     {
-        try {
-            currentSale.setCount(itemID, itemCount);
-            updateOnUpdate();
-        } catch (Exception e) {
-            throw e;
-        }
+        currentSale.setCount(itemID, itemCount);
+        updateOnUpdate();
     }
 
     /**

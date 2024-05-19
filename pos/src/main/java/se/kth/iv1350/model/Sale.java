@@ -80,7 +80,7 @@ public class Sale {
     public void setCount(int itemID, int itemCount)
     {
         int oneItem = 1;
-        String invalidCountMessage = "Illegal value for parameter itemCount.";
+        String invalidCountMessage = "Illegal value for parameter itemCount (tried to set item to " + itemCount + ").";
         String invalidItemMessage = "No item with id " + id + " in sale.";
         if (itemCount < oneItem) {
             throw new InvalidParameterException(invalidCountMessage);

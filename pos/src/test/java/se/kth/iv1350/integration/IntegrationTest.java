@@ -1,7 +1,6 @@
 package se.kth.iv1350.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -84,6 +83,21 @@ public class IntegrationTest {
     }
 
     /**
+     * Checks that timeout works.
+     */
+    @Test
+    public void timeoutTest() {
+        int timeoutID = -1;
+
+        try {
+            ItemDTO item = integration.lookup(timeoutID);
+            fail("Request did not timeout.");
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    /**
      * Checks that a discount request is correctly returned.
      */
     @Test
@@ -93,7 +107,6 @@ public class IntegrationTest {
         double expectedTotalDiscount = 0.1;
         int expectedFlatDiscount = 15;
         int customerID = 1;
-        int totalCost = 60;
         int saleID = 0;
         ItemDTO item1 = new ItemDTOBuilder(1).setCost(20).build();
         ItemDTO item2 = new ItemDTOBuilder(2).setCost(20).build();
