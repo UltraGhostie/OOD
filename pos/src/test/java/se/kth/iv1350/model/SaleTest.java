@@ -65,9 +65,9 @@ public class SaleTest implements Observer{
     @Test
     public void addTest()
     {
-        sale.add(itemDTO);
-        for (ItemDTO item : sale.dto().items) {
-            if (item.itemID == itemDTO.itemID) {
+        sale.add(item.dto());
+        for (ItemDTO currentItem : sale.dto().items) {
+            if (currentItem.itemID == item.dto().itemID) {
                 assertTrue(true);
                 return;
             }
@@ -82,7 +82,7 @@ public class SaleTest implements Observer{
     public void setGoodCountTest()
     {
         int goodCount = 5;
-        sale.add(itemDTO);
+        sale.add(item.dto());
         sale.setCount(item.itemID, goodCount);
         for (ItemDTO item : sale.dto().items) {
             assertEquals(goodCount, item.count);
@@ -98,7 +98,7 @@ public class SaleTest implements Observer{
         int goodCount = 5;
         int badID = -1;
         String success = "Managed to set value on item that should not exist.";
-        sale.add(item);
+        sale.add(item.dto());
         try {
             sale.setCount(badID, goodCount);
             fail(success);
@@ -115,7 +115,7 @@ public class SaleTest implements Observer{
     {
         int badCount = -5;
         String success = "Managed to set item to illegal value.";
-        sale.add(item);
+        sale.add(item.dto());
         try {
             sale.setCount(item.itemID, badCount);
             fail(success);
@@ -132,11 +132,11 @@ public class SaleTest implements Observer{
     {
         int oneItem = 1;
         int twoItems = 2;
-        sale.add(itemDTO);
+        sale.add(item.dto());
         for (ItemDTO item : sale.dto().items) {
             assertEquals(oneItem, item.count);
         }
-        sale.add(itemDTO);
+        sale.add(item.dto());
         for (ItemDTO item : sale.dto().items) {
             assertEquals(twoItems, item.count);
         }
@@ -172,7 +172,7 @@ public class SaleTest implements Observer{
         DiscountDTO discountInfo = new DiscountDTO(customerDiscount, totalDiscount, flatDiscount);
         Controller controller = Controller.getInstance();
         controller.startSale();
-        sale.add(item);
+        sale.add(item.dto());
         sale.setCount(knownItemID, itemCount);
         sale.applyDiscount(discountInfo);
         assertEquals(expectedDiscount, sale.dto().totalDiscount, 1);

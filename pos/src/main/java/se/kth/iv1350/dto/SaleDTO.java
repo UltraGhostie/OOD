@@ -29,8 +29,10 @@ public class SaleDTO {
     SaleDTO(int saleID, List<Item> items, LocalDateTime dateTime, Integer customerID, double totalDiscount, double payment)
     {
         this.items = new ArrayList<>();
-        for (Item item : items) {
-            this.items.add(item.dto());
+        if (items != null) {
+            for (Item item : items) {
+                this.items.add(item.dto());
+            }
         }
         this.saleID = saleID;
         this.dateTime = dateTime;
