@@ -1,9 +1,11 @@
 package se.kth.iv1350.view;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import se.kth.iv1350.controller.Controller;
 import se.kth.iv1350.dto.ItemDTO;
@@ -60,18 +62,27 @@ public class View implements SaleObserver{
         }
         try {
             controller.setCount(validItem, invalidCount);
-        } catch (Exception e) {
+        } catch (InvalidParameterException e) {
             log(e);
+            out("An error has occured and has been logged: Tried to set count to an invalid amount.");
         }
         try {
             controller.scanItem(noServer);
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             log(e);
+            out("An error has occured and has been logged: Server could not be reached.");
+        } catch (InvalidParameterException e) {
+            log(e);
+            out("An error has occured and has been logged: No item with scanned id could be found.");
         }
         try {
             controller.scanItem(invalidItem);
-        } catch (Exception e) {
+        } catch (InvalidParameterException e) {
             log(e);
+            out("An error has occured and has been logged: No item with scanned id could be found.");
+        } catch (TimeoutException e) {
+            log(e);
+            out("An error has occured and has been logged: Server could not be reached.");
         }
         controller.discountRequest(customerID);
         payment = 20;
@@ -140,7 +151,6 @@ public class View implements SaleObserver{
 
     private void log(Exception e)
     {
-        out("An error has occured and has been logged: " + e.getMessage());
         Logger.getInstance().log(e);
     }
 }

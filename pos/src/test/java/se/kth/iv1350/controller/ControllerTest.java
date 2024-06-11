@@ -117,6 +117,22 @@ public class ControllerTest implements SaleObserver{
     }
 
     /**
+     * Checks that timeout error works.
+     */
+    @Test
+    public void timeoutTest()
+    {
+        int invalidItemID = -1;
+        try {
+            controller.scanItem(invalidItemID);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+
+    /**
      * Checks that setCount works as intended.
      */
     @Test
