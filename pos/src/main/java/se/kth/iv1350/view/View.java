@@ -1,6 +1,12 @@
 package se.kth.iv1350.view;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import se.kth.iv1350.controller.Controller;
+import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
 
 /**
@@ -75,10 +81,58 @@ public class View implements SaleObserver{
     private void outputSale()
     {
         
-        out(saleInfo.toString());
+        out(toString(saleInfo));
         out("");
     }
 
+    public String toString(SaleDTO saleInfo)
+    {
+        int saleID = saleInfo.saleID;
+        LocalDateTime dateTime = saleInfo.dateTime;
+        List<ItemDTO> items = saleInfo.items;
+        double cost = saleInfo.totalCostBeforeDiscount;
+        double discount = saleInfo.totalDiscount;
+        double change = saleInfo.change;
+        String string = "";
+
+        if (payment > 0) {
+            string += "\nReceipt:";
+        }
+
+        string += "\nSale id: " + saleID;
+
+        if (dateTime != null) {
+            int day = dateTime.getDayOfMonth();
+            int month = dateTime.getMonthValue();
+            int year = dateTime.getYear();
+            string += "\nDate: " + day + "-" + month + "-" + year;
+            
+            string += "\nTime: " + dateTime.toLocalTime().toString().split("\\.")[0];
+            
+        }
+        
+        if (items.size() > 0) {
+            string += "\nItems: ";
+            for (ItemDTO item : items) {
+                string += "\n" + item.name + "*" + item.count + ", " + item.cost + "*" + item.count + ", vat: " + ((double)Math.round(item.cost*item.count*item.vat*100))/100 + " (" + (item.vat*100) + "%)";
+            }
+        }
+        if (discount != 0) {
+            string += "\nCost before discount: " + cost;
+            
+
+            string += "\nDiscount: " + discount;
+            
+        }
+
+        string += "\nTotal: " + (cost-discount);
+        if (payment > 0) {
+            string += "\nPaid: " + payment;
+            string += "\nChange: " + change;
+        }
+
+        return string;
+    }
     private void out(String string)
     {
         System.out.println(string);

@@ -41,7 +41,12 @@ public class Controller implements Observable{
     {
         Sale newSale = new Sale();
         this.currentSale = newSale;
-        updateOnUpdate();
+        for (SaleObserver saleObserver : onUpdateSubscribers) {
+            newSale.subscribeOnUpdate(saleObserver);
+        }
+        for (SaleObserver saleObserver : onFinishSubscribers) {
+            newSale.subscribeOnFinish(saleObserver);
+        }
     }
 
     /**
@@ -54,7 +59,6 @@ public class Controller implements Observable{
     public void scanItem(int itemID) throws TimeoutException, InvalidParameterException
     {
         currentSale.add(integration.lookup(itemID));
-        updateOnUpdate();
     }
 
     /**
@@ -66,7 +70,6 @@ public class Controller implements Observable{
     public void setCount(int itemID, int itemCount) throws InvalidParameterException
     {
         currentSale.setCount(itemID, itemCount);
-        updateOnUpdate();
     }
 
     /**
@@ -76,7 +79,6 @@ public class Controller implements Observable{
     public void discountRequest(int customerID)
     {
         currentSale.applyDiscount(integration.discountRequest(currentSale.dto()));
-        updateOnUpdate();
     }
 
     /**
@@ -91,12 +93,9 @@ public class Controller implements Observable{
         integration.removeInventory(saleInfo);
         integration.recordSale(saleInfo);
         integration.updateRegister(amount);
-        updateOnFinish();
-        updateOnUpdate();
         currentSale = null;
         return;
     }
-
     /**
      * @param observer Adds observer as a subscriber to the event OnPayment.
      */
@@ -104,6 +103,9 @@ public class Controller implements Observable{
     public void subscribeOnFinish(SaleObserver observer)
     {
         this.onFinishSubscribers.add(observer);
+        if (currentSale != null) {
+            currentSale.subscribeOnFinish(observer);
+        }
     }
 
     /**
@@ -113,19 +115,9 @@ public class Controller implements Observable{
     public void subscribeOnUpdate(SaleObserver observer)
     {
         this.onUpdateSubscribers.add(observer);
-    }
-
-    private void updateOnUpdate()
-    {
-        for (SaleObserver observer : onUpdateSubscribers) {
-            observer.stateChange(currentSale.dto());
+        if (currentSale != null) {
+            currentSale.subscribeOnUpdate(observer);
         }
     }
 
-    private void updateOnFinish()
-    {
-        for (SaleObserver observer : onFinishSubscribers) {
-            observer.stateChange(currentSale.dto());
-        }
-    }
 }

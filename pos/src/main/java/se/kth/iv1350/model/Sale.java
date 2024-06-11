@@ -1,10 +1,12 @@
 package se.kth.iv1350.model;
+import se.kth.iv1350.view.SaleObserver;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 
+import se.kth.iv1350.controller.Observable;
 import se.kth.iv1350.dto.DiscountDTO;
 import se.kth.iv1350.dto.ItemDTO;
 import se.kth.iv1350.dto.SaleDTO;
@@ -12,11 +14,13 @@ import se.kth.iv1350.dto.SaleDTO;
 /**
  * Contains information about the an ongoing sale.
  */
-public class Sale {
+public class Sale implements Observable {
     private int id;
     private ArrayList<Item> items;
     private double totalDiscount;
     private double payment = 0;
+    private ArrayList<SaleObserver> onFinishSubscribers = new ArrayList<>();
+    private ArrayList<SaleObserver> onUpdateSubscribers = new ArrayList<>();
     
     /**
      * Initializes a new object of type sale.
@@ -69,6 +73,7 @@ public class Sale {
             }
         }
         items.add(newItem);
+        updateOnUpdate();
     }
 
     /**
@@ -94,6 +99,7 @@ public class Sale {
                 item.setCount(itemCount);
             }
         }
+        updateOnUpdate();
     }
 
     /**
@@ -105,10 +111,11 @@ public class Sale {
         totalDiscount += discountInfo.flatDiscount;
         totalDiscount += discountInfo.customerDiscount * totalCost();
         totalDiscount += discountInfo.totalDiscount * totalCost();
+        updateOnUpdate();
     }
 
     /**
-     * Set payment.
+     * Set payment. Presumes the action ends the sale and thus fires the onFinish event.
      * @param amount The payment amount
      * @return The amount of change
      */
@@ -121,6 +128,8 @@ public class Sale {
             throw new InvalidParameterException("Payment requirements not met.");
         }
         this.payment = amount;
+        updateOnFinish();
+        updateOnUpdate();
     }
 
     private int totalCost()
@@ -138,5 +147,39 @@ public class Sale {
         Random random = new Random();
         id = Math.abs(random.nextInt());
         return id;
+    }
+
+    /**
+     * @param observer Adds observer as a subscriber to the event OnPayment.
+     */
+    @Override
+    public void subscribeOnFinish(SaleObserver observer)
+    {
+        this.onFinishSubscribers.add(observer);
+        observer.stateChange(dto());
+    }
+
+    /**
+     * @param observer Adds observer as a subscriber to the event OnUpdate.
+     */
+    @Override
+    public void subscribeOnUpdate(SaleObserver observer)
+    {
+        this.onUpdateSubscribers.add(observer);
+        observer.stateChange(dto());
+    }
+
+    private void updateOnUpdate()
+    {
+        for (SaleObserver observer : onUpdateSubscribers) {
+            observer.stateChange(dto());
+        }
+    }
+
+    private void updateOnFinish()
+    {
+        for (SaleObserver observer : onFinishSubscribers) {
+            observer.stateChange(dto());
+        }
     }
 }

@@ -43,52 +43,6 @@ public class SaleDTO {
         this.change = payment-totalCostBeforeDiscount+totalDiscount;
     }
 
-    public String toString()
-    {
-        String string = "";
-
-        if (payment > 0) {
-            string += "\nReceipt:";
-        }
-
-        string += "\nSale id: " + saleID;
-
-        if (dateTime != null) {
-            int day = dateTime.getDayOfMonth();
-            int month = dateTime.getMonthValue();
-            int year = dateTime.getYear();
-            string += "\nDate: " + day + "-" + month + "-" + year;
-            
-            string += "\nTime: " + dateTime.toLocalTime().toString().split("\\.")[0];
-            
-        }
-        
-        if (items.size() > 0) {
-            string += "\nItems: ";
-            for (ItemDTO item : items) {
-                string += "\n" + item.name + "*" + item.count + ", " + item.cost + "*" + item.count + ", vat: " + ((double)Math.round(item.cost*item.count*item.vat*100))/100 + " (" + (item.vat*100) + "%)";
-            }
-        }
-        
-        double cost = totalCostBeforeDiscount;
-        double discount = totalDiscount;
-        if (discount != 0) {
-            string += "\nCost before discount: " + cost;
-            
-
-            string += "\nDiscount: " + discount;
-            
-        }
-
-        string += "\nTotal: " + (cost-discount);
-        if (payment > 0) {
-            string += "\nPaid: " + payment;
-            string += "\nChange: " + change;
-        }
-
-        return string;
-    }
-
     public static class SaleDTOBuilder {
         //Required
         int saleID;
